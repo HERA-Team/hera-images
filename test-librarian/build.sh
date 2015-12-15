@@ -52,5 +52,6 @@ git archive HEAD |(cd $work/librarian && tar x)
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."
+$DOCKER tag -f $imagename ${imagename%:*}:dev
 rm -rf $work
 exit 0
