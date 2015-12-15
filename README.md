@@ -23,12 +23,36 @@ in this repository with its corresponding
 [Dockerfile](https://docs.docker.com/engine/reference/builder/) and supporting
 files.
 
+* [`rsync-pot`]
 * [`test-librarian-db`]
 * [`test-librarian`]
 
 <!-- this awkward setup lets us hyperlink image descriptions more easily -->
+[`rsync-pot`]: #rsync-pot
 [`test-librarian-db`]: #test-librarian-db
 [`test-librarian`]: #test-librarian
+
+
+`rsync-pot`
+-------------------
+
+This image provides an [rsync] server that can send and receive files in a
+volume named `/data`. It is based on the standard
+[`debian:jessie`](https://hub.docker.com/_/debian/) Docker image.
+
+[rsync]: https://rsync.samba.org/
+
+**Build.** Build this image by running the
+[rsync-pot/build.sh](rsycn-pot/build.sh) script. The built image will be named
+something like `hera-rsync-pot:YYYYMMDD`. It will also label that image as
+`hera-rsync-pot:dev`.
+
+**Launch.** When you start a container based on this image, you may want to
+mount a volume at the location `/data` to pre-seed the image with data, or to
+access data that are synced to the server. If you don’t, everything will work,
+but getting data out of the server will be a bit more of a hassle.
+
+**Access.** The container runs an [rsync] server on the standard port, 873.
 
 
 `test-librarian-db`
@@ -112,11 +136,24 @@ HERA_LIBDB_PASSWORD=1234
 sudo docker run -d --name libdb -e MYSQL_ROOT_PASSWORD=$HERA_LIBDB_PASSWORD hera-test-librarian-db:dev
 ```
 
-Then the Librarian itself, linked to its backing database. We also expose the
-Librarian web interface on <http://localhost:21106/hl.php> in case you want to
-interact with it directly:
+Now, create a “pot” where data may be rsynced:
 
 ```
-sudo docker run -d --name librarian -e HERA_LIBDB_PASSWORD=$HERA_LIBDB_PASSWORD \
-  --link libdb:libdb -p 21106:80 hera-test-librarian:dev
+sudo docker run -d --name rsync0 hera-rsync-pot:dev
+```
+
+Then the Librarian itself, linked to its backing database and the “remote”
+rsync store. We also mount a volume of data so that there are things to look
+at. Finally, we expose the Librarian web interface on
+<http://localhost:21106/hl.php> in case you want to interact with it directly:
+
+```
+DEMO_VOLUME=/b/hera-samples/digilab_pot0
+sudo docker run -d --name librarian \
+  -e HERA_LIBDB_PASSWORD=$HERA_LIBDB_PASSWORD \
+  --link libdb:libdb \
+  --link rsync0:rsync0 \
+  -v $DEMO_VOLUME:/hera/localstore \
+  -p 21106:80 \
+  hera-test-librarian:dev
 ```
