@@ -23,14 +23,43 @@ in this repository with its corresponding
 [Dockerfile](https://docs.docker.com/engine/reference/builder/) and supporting
 files.
 
+* [`stack`]
 * [`rsync-pot`]
 * [`test-librarian-db`]
 * [`test-librarian`]
 
 <!-- this awkward setup lets us hyperlink image descriptions more easily -->
+[`stack`]: #stack
 [`rsync-pot`]: #rsync-pot
 [`test-librarian-db`]: #test-librarian-db
 [`test-librarian`]: #test-librarian
+
+
+`stack`
+-------
+
+This image provides the HERA software stack install on top of an
+[Anaconda Python] distribution. It is based on the
+[`continuumio/miniconda`](https://hub.docker.com/r/continuumio/miniconda/)
+Docker image.
+
+[Anaconda Python]: http://docs.continuum.io/anaconda/index
+
+**Build.** Build this image by running the [stack/build.sh](stack/build.sh)
+script. The built image will be named something like `hera-stack:YYYYMMDD`. It
+will also label that image as `hera-stack:dev`.
+
+The build script takes 4 arguments pointing to Git repositories or checkouts
+for [Aipy], [Capo], the [HERA Librarian], and the [RTP].
+
+[Aipy]: https://github.com/AaronParsons/aipy
+[Capo]: https://github.com/dannyjacobs/capo/
+[RTP]: https://github.com/jonr667/still_workflow
+
+**Launch.** This image needs no special setup to be launched.
+
+**Access.** This image runs no services; its default command is instead
+`/bin/bash`. It’s intended to be used interactively.
 
 
 `rsync-pot`
@@ -43,7 +72,7 @@ volume named `/data`. It is based on the standard
 [rsync]: https://rsync.samba.org/
 
 **Build.** Build this image by running the
-[rsync-pot/build.sh](rsycn-pot/build.sh) script. The built image will be named
+[rsync-pot/build.sh](rsync-pot/build.sh) script. The built image will be named
 something like `hera-rsync-pot:YYYYMMDD`. It will also label that image as
 `hera-rsync-pot:dev`.
 
