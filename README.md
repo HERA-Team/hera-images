@@ -181,7 +181,7 @@ at. Finally, we expose the Librarian web interface on
 <http://localhost:21106/hl.php> in case you want to interact with it directly:
 
 ```
-DEMO_VOLUME=/b/hera-samples/digilab_pot0
+DEMO_VOLUME=/b/hera-samples/digilab_pot0 # will likely vary
 sudo docker run -d --name librarian \
   -e HERA_LIBDB_PASSWORD=$HERA_LIBDB_PASSWORD \
   --link libdb:libdb \
@@ -190,3 +190,17 @@ sudo docker run -d --name librarian \
   -p 21106:80 \
   hera-test-librarian:dev
 ```
+
+Now we need to load our sample data into the Librarian database. The easiest
+way to do this is by using a temporary client image that has access to the
+full software stack:
+
+```
+sudo docker run --rm \
+  --link librarian:librarian \
+  -v $DEMO_VOLUME:/data \
+  hera-stack:dev /bin/bash -c \
+  "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543210\"}}}' >/.hl_client.cfg &&
+  /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*.uv"
+```
+
