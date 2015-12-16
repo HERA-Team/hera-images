@@ -150,6 +150,10 @@ app on port 80, accessible at the URL `/hl.php`.
 See the description of the [`test-librarian-db`] image for a summary of the
 configuration that the Librarian is preloaded with.
 
+Inside the image, the librarian source code is stored in `/var/www/html`, so
+if you use Docker’s `-v` option to mount a Git checkout of the librarian at
+that location, you can test code changes on the fly.
+
 
 Running a Test Rig
 ==================

@@ -2,24 +2,24 @@
 # Copyright 2015 the HERA Collaboration.
 # Licensed under the MIT License.
 
-usage="$0
+usage="$0 <librarian>
 
 This script builds a Docker image of the HERA Librarian software subsystem.
-You should run it from a Git checkout of the Librarian source code. When it is
-done, your Docker system will have a new image called
+The argument is a URL to a Git checkout or repository for the librarian
+software; see the 'fetch-tree.sh' script.
+
+When the build is done, your Docker system will have a new image called
 \"hera-test-librarian:YYYYMMDD\" that you can then use, where YYYYMMDD encodes
 today's date."
 
-# Are we in a Librarian Git checkout?
-
-if git ls-files |grep -q -F hl.php ; then
-    true # yes
-else
+if [ $# -ne 1 ] ; then
     echo >&2 "$usage"
     exit 1
 fi
 
-# OK. Setup options and useful variables.
+librarian_url="$1"
+
+# Setup options and useful variables.
 
 specdir=$(dirname $0)
 if [ ! -f $specdir/Dockerfile ] ; then
@@ -31,24 +31,12 @@ imagename=hera-test-librarian:$(date +%Y%m%d)
 
 : ${DOCKER:=sudo docker} # i.e., default $DOCKER to 'sudo docker' if unset
 
-# We're going to build an image from the current HEAD commit. We complain
-# if there are uncommitted changes.
-
-git update-index -q --refresh
-hash=$(git show-ref -h --hash=6 |head -n1)
-echo "Building an image for commit $hash."
-
-if [ -n "$(git diff-index --name-only HEAD --)" ] ; then
-    echo >&2 "warning: the current git repository has uncommitted changes; they will be ignored"
-fi
-
 # Set up files and build.
 
 set -e
 work=$(mktemp -d)
 echo "Temporary work directory is $work ."
-mkdir $work/librarian
-git archive HEAD |(cd $work/librarian && tar x)
+$specdir/../fetch-tree.sh $librarian_url $work/librarian
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."

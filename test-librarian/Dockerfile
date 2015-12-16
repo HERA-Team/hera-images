@@ -10,10 +10,11 @@
 FROM php:7.0-apache
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
-# apt-get install -y ...
-
 RUN apt-get update && \
-    docker-php-ext-install mysqli
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+    zip
+
+RUN docker-php-ext-install mysqli
 
 COPY librarian /var/www/html/
 COPY hera-bootup.sh /usr/local/bin/
