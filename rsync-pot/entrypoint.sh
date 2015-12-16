@@ -16,12 +16,12 @@ use chroot = yes
 pid file = /var/run/rsyncd.pid
 log file = /dev/stdout
 
-[volume]
-    hosts deny = *
-    hosts allow = ${ALLOW}
-    read only = false
-    path = ${VOLUME}
-    comment = ${VOLUME}
+[data]
+hosts deny = *
+hosts allow = ${ALLOW}
+read only = false
+path = ${VOLUME}
+comment = ${VOLUME}
 EOF
 
 exec /usr/bin/rsync --no-detach --daemon --config /etc/rsyncd.conf "$@"
