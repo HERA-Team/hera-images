@@ -15,6 +15,7 @@ RUN apt-get update && \
 
 RUN conda install -y \
     ephem \
+    mysql-python \
     numpy \
     psutil \
     scipy \
@@ -38,5 +39,6 @@ RUN cd /hera/capo && \
 COPY librarian /hera/librarian
 
 COPY rtp /hera/rtp
+RUN mkdir -p /hera/rtp/log
 
 CMD ["/bin/bash"]
