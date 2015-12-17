@@ -25,13 +25,13 @@ files.
 
 * [`stack`]
 * [`rsync-pot`]
-* [`test-librarian-db`]
+* [`test-db`]
 * [`test-librarian`]
 
 <!-- this awkward setup lets us hyperlink image descriptions more easily -->
 [`stack`]: #stack
 [`rsync-pot`]: #rsync-pot
-[`test-librarian-db`]: #test-librarian-db
+[`test-db`]: #test-db
 [`test-librarian`]: #test-librarian
 
 
@@ -54,6 +54,7 @@ for [Aipy], [Capo], the [HERA Librarian], and the [RTP].
 
 [Aipy]: https://github.com/AaronParsons/aipy
 [Capo]: https://github.com/dannyjacobs/capo/
+[HERA Librarian]: http://herawiki.berkeley.edu/doku.php/librarian
 [RTP]: https://github.com/jonr667/still_workflow
 
 **Launch.** This image needs no special setup to be launched.
@@ -84,21 +85,18 @@ but getting data out of the server will be a bit more of a hassle.
 **Access.** The container runs an [rsync] server on the standard port, 873.
 
 
-`test-librarian-db`
+`test-db`
 -------------------
 
-This image provides the backing database for testing the [HERA Librarian]
-service. It is based on the standard
-[`mysql:5.7`](https://hub.docker.com/_/mysql/) Docker image.
-
-[HERA Librarian]: http://herawiki.berkeley.edu/doku.php/librarian
+This image provides a backing database for testing the HERA stack. It is a
+Frankenstein combination of the standard
+[`mysql:5.7`](https://hub.docker.com/_/mysql/) Docker image and our [`stack`]
+image.
 
 **Build.** Build this image by running the
-[test-librarian-db/build.sh](test-librarian-db/build.sh) script *from a Git
-checkout of the Librarian repository*. The built image will package the code
-contained in the HEAD commit of that repository, and will be named something
-like `hera-test-librarian-db:YYYYMMDD`. It will also label that image as
-`hera-test-librarian-db:dev`.
+[test-db/build.sh](test-db/build.sh) script. The built image will be named
+something like `hera-test-db:YYYYMMDD`. It will also label that image as
+`hera-test-db:dev`.
 
 **Launch.** When you start a container based on this image, you must set the
 environment variable `MYSQL_ROOT_PASSWORD`.
@@ -106,7 +104,7 @@ environment variable `MYSQL_ROOT_PASSWORD`.
 **Access.** The container runs a [MySQL](https://www.mysql.com/) server on the
 standard port, 3306.
 
-On first startup the database is initialized with the following:
+On first startup the Librarian database is initialized with the following:
 
 * A `source` named `RTP` with authenticator `9876543210`.
 * A `source` named `Correlator` with authenticator `9876543211`.
@@ -117,8 +115,11 @@ On first startup the database is initialized with the following:
 
 Note that while the database server records this information, the
 [HERA Librarian] web application is the one that actually uses it, so
-hostnames and such need to be resolvable by the [`test-librarian-db`]
-container, not the database container.
+hostnames and such need to be resolvable by the [`test-librarian`] container,
+not the database container.
+
+On first startup the RTP database is initialized with the current schema, but
+left empty.
 
 
 `test-librarian`
@@ -129,25 +130,23 @@ application. It is based on the standard
 [`php:7.0-apache`](https://hub.docker.com/_/php/) Docker image.
 
 **Build.** Build this image by running the
-[test-librarian/build.sh](test-librarian/build.sh) script *from a Git checkout
-of the Librarian repository*. The built image will package the code contained
-in the HEAD commit of that repository, and will be named something like
-`hera-test-librarian:YYYYMMDD`. It will also label that image as
-`hera-test-librarian:dev`.
+[test-librarian/build.sh](test-librarian/build.sh) script. The built image
+will be named something like `hera-test-librarian:YYYYMMDD`. It will also
+label that image as `hera-test-librarian:dev`.
 
 **Launch.** When launching the service, you must
 [“link”](https://docs.docker.com/v1.8/userguide/dockerlinks/) it with a
-container running the [`test-librarian-db`] image under the internal name
-`libdb`. **Note** that inter-container linking in Docker is evolving rapidly
-and so the precise procedure for this may change. You must also set the
-`HERA_LIBDB_PASSWORD` environment variable to the password used to access the
-database. Finally, if you want to experiment with sample data, you should
-mount a volume with HERA data at `/hera/localstore`.
+container running the [`test-db`] image under the internal name `db`. **Note**
+that inter-container linking in Docker is evolving rapidly and so the precise
+procedure for this may change. You must also set the `HERA_DB_PASSWORD`
+environment variable to the password used to access the database. Finally, if
+you want to experiment with sample data, you should mount a volume with HERA
+data at `/hera/localstore/datax`.
 
 **Access.** Once started, the service runs an instance of the Librarian web
 app on port 80, accessible at the URL `/hl.php`.
 
-See the description of the [`test-librarian-db`] image for a summary of the
+See the description of the [`test-db`] image for a summary of the
 configuration that the Librarian is preloaded with.
 
 Inside the image, the librarian source code is stored in `/var/www/html`, so
@@ -162,11 +161,11 @@ To test the HERA online system, you first need to build the various images
 described above, following the directions given above for each image. You can
 then proceed to launch each service.
 
-First, the backing database for the Librarian:
+First, the backing database:
 
 ```
-HERA_LIBDB_PASSWORD=1234
-sudo docker run -d --name libdb -e MYSQL_ROOT_PASSWORD=$HERA_LIBDB_PASSWORD hera-test-librarian-db:dev
+HERA_DB_PASSWORD=1234
+sudo docker run -d --name db -e MYSQL_ROOT_PASSWORD=$HERA_DB_PASSWORD hera-test-db:dev
 ```
 
 Now, create a “pot” where data may be rsynced:
@@ -175,7 +174,7 @@ Now, create a “pot” where data may be rsynced:
 sudo docker run -d --name rsync0 hera-rsync-pot:dev
 ```
 
-Then the Librarian itself, linked to its backing database and the “remote”
+Then the Librarian itself, linked to the backing database and the “remote”
 rsync store. We also mount a volume of data so that there are things to look
 at. Finally, we expose the Librarian web interface on
 <http://localhost:21106/hl.php> in case you want to interact with it directly:
@@ -183,17 +182,17 @@ at. Finally, we expose the Librarian web interface on
 ```
 DEMO_VOLUME=/b/hera-samples/digilab_pot0 # will likely vary
 sudo docker run -d --name librarian \
-  -e HERA_LIBDB_PASSWORD=$HERA_LIBDB_PASSWORD \
-  --link libdb:libdb \
+  -e HERA_DB_PASSWORD=$HERA_DB_PASSWORD \
+  --link db:db \
   --link rsync0:rsync0 \
-  -v $DEMO_VOLUME:/hera/localstore \
+  -v $DEMO_VOLUME:/hera/localstore/data \
   -p 21106:80 \
   hera-test-librarian:dev
 ```
 
-Now we need to load our sample data into the Librarian database. The easiest
-way to do this is by using a temporary client image that has access to the
-full software stack:
+Now we need to load our sample data into the Librarian. The easiest way to do
+this is by using a temporary client image that has access to the full software
+stack:
 
 ```
 sudo docker run --rm \

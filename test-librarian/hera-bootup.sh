@@ -11,10 +11,10 @@ set -e
 
 cat <<EOF >/var/www/html/hl_server.cfg
 { 
-"db_host": "$LIBDB_PORT_3306_TCP_ADDR",
+"db_host": "$DB_PORT_3306_TCP_ADDR",
 "db_user": "root",
 "db_name": "hera_lib",
-"db_passwd": "$HERA_LIBDB_PASSWORD",
+"db_passwd": "$HERA_DB_PASSWORD",
 "max_transfers": 10,
 "title": "HERA Librarian Docker container"
 }
