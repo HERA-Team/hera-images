@@ -43,7 +43,7 @@ EOF
 # to be accepting network connections so that workaround doesn't work. So we
 # just do a symlink hack.
 
-mkdir /hera/rtp/log
+mkdir -p /hera/rtp/log
 ln -s /var/run/mysqld/mysqld.sock /tmp/mysql.sock
 /hera/rtp/bin/still.py --client --init
 rm -f /tmp/mysql.sock
