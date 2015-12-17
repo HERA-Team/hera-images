@@ -27,12 +27,14 @@ files.
 * [`rsync-pot`]
 * [`test-db`]
 * [`test-librarian`]
+* [`test-rtp-server`]
 
 <!-- this awkward setup lets us hyperlink image descriptions more easily -->
 [`stack`]: #stack
 [`rsync-pot`]: #rsync-pot
 [`test-db`]: #test-db
 [`test-librarian`]: #test-librarian
+[`test-rtp-server`]: #test-rtp-server
 
 
 `stack`
@@ -141,7 +143,7 @@ that inter-container linking in Docker is evolving rapidly and so the precise
 procedure for this may change. You must also set the `HERA_DB_PASSWORD`
 environment variable to the password used to access the database. Finally, if
 you want to experiment with sample data, you should mount a volume with HERA
-data at `/hera/localstore/datax`.
+data at `/hera/localstore/data`.
 
 **Access.** Once started, the service runs an instance of the Librarian web
 app on port 80, accessible at the URL `/hl.php`.
@@ -152,6 +154,29 @@ configuration that the Librarian is preloaded with.
 Inside the image, the librarian source code is stored in `/var/www/html`, so
 if you use Docker’s `-v` option to mount a Git checkout of the librarian at
 that location, you can test code changes on the fly.
+
+
+`test-rtp-server`
+----------------
+
+This image run the server that drives the RTP pipeline. It is based on the
+[`stack`] image.
+
+**Build.** Build this image by running the
+[test-rtp-server/build.sh](test-rtp-server/build.sh) script. The built image
+will be named something like `hera-test-rtp-server:YYYYMMDD`. It will also
+label that image as `hera-test-rtp-server:dev`.
+
+**Launch.** When launching the service, you must link it with a container
+running the [`test-db`] image under the internal name `db`. You must also set
+the `HERA_DB_PASSWORD` environment variable to the password used to access the
+database.
+
+An `EOFError` exception gets thrown on RTP startup, but it is in a background
+thread and can safely be ignored.
+
+**Access.** Once started, the service runs the RTP server, accessible on
+port 14204.
 
 
 Running a Test Rig
@@ -168,12 +193,6 @@ HERA_DB_PASSWORD=1234
 sudo docker run -d --name db -e MYSQL_ROOT_PASSWORD=$HERA_DB_PASSWORD hera-test-db:dev
 ```
 
-Now, create a “pot” where data may be rsynced:
-
-```
-sudo docker run -d --name rsync0 hera-rsync-pot:dev
-```
-
 Then the Librarian itself, linked to the backing database and the “remote”
 rsync store. We also mount a volume of data so that there are things to look
 at. Finally, we expose the Librarian web interface on
@@ -184,7 +203,6 @@ DEMO_VOLUME=/b/hera-samples/digilab_pot0 # will likely vary
 sudo docker run -d --name librarian \
   -e HERA_DB_PASSWORD=$HERA_DB_PASSWORD \
   --link db:db \
-  --link rsync0:rsync0 \
   -v $DEMO_VOLUME:/hera/localstore/data \
   -p 21106:80 \
   hera-test-librarian:dev
@@ -203,3 +221,13 @@ sudo docker run --rm \
   /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*.uv"
 ```
 
+Now we can start up the RTP server. The RTP servers use hostnames to talk to each
+other, so it is helpful to set the hostnames in the containers to reasonable values:
+
+```
+sudo docker run -d --name rtp-server \
+  -e HERA_DB_PASSWORD=$HERA_DB_PASSWORD \
+  --link db:db \
+  -h rtp-server \
+  hera-test-rtp-server:dev
+```
