@@ -24,6 +24,7 @@ in this repository with its corresponding
 files.
 
 * [`stack`]
+* [`ssh-stack`]
 * [`rsync-pot`]
 * [`test-db`]
 * [`test-librarian`]
@@ -31,6 +32,7 @@ files.
 
 <!-- this awkward setup lets us hyperlink image descriptions more easily -->
 [`stack`]: #stack
+[`ssh-stack`]: #ssh-stack
 [`rsync-pot`]: #rsync-pot
 [`test-db`]: #test-db
 [`test-librarian`]: #test-librarian
@@ -63,6 +65,24 @@ for [Aipy], [Capo], the [HERA Librarian], and the [RTP].
 
 **Access.** This image runs no services; its default command is instead
 `/bin/bash`. It’s intended to be used interactively.
+
+
+`ssh-stack`
+-------
+
+This image extends the [`stack`] image to set up the root user to be able to
+SSH into other hosts without a password. It is used as a base for various HERA
+services that expect to be able to do this.
+
+**Build.** Build this image by running the
+[ssh-stack/build.sh](ssh-stack/build.sh) script. The built image will be named
+something like `hera-ssh-stack:YYYYMMDD`. It will also label that image as
+`hera-ssh-stack:dev`.
+
+**Launch.** This image needs no special setup to be launched.
+
+**Access.** By default, this image runs `sshd` in daemon mode. If making a
+derived image, you have to run `sshd` yourself!
 
 
 `rsync-pot`
