@@ -53,6 +53,8 @@ if [ $protocol = dev ] ; then
     path=${url##dev://}
     mkdir -p $(dirname "$dest")
     cp -a "$path" "$dest"
+    # do not propagate user's built files into the container!:
+    [ -f "$dest"/setup.py ] && rm -rf "$dest"/build
     hash="non-reproducible-tree-copy"
 else
     cd $(dirname "$dest")
