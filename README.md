@@ -186,23 +186,41 @@ To test the HERA online system, you first need to build the various images
 described above, following the directions given above for each image. You can
 then proceed to launch each service.
 
-First, the backing database:
+First, to allow the different services to automatically be able to look up
+each other’s host names, we need to create a special virtual “network” that
+they all share:
+
+```
+sudo docker network create -d bridge hera
+```
+
+(As a side note, containers only auto-discover each other is their host names
+are explicitly set, which is why we give the `-h` option to `docker run` when
+creating the various services.)
+
+Now we can launch the backing database:
 
 ```
 HERA_DB_PASSWORD=1234
-sudo docker run -d --name db -e MYSQL_ROOT_PASSWORD=$HERA_DB_PASSWORD hera-test-db:dev
+sudo docker run -d --net hera --name db -h db \
+  -e MYSQL_ROOT_PASSWORD=$HERA_DB_PASSWORD hera-test-db:dev
 ```
 
-Then the Librarian itself, linked to the backing database and the “remote”
-rsync store. We also mount a volume of data so that there are things to look
-at. Finally, we expose the Librarian web interface on
+If you ever want to examine the database directly, you can do so by running
+a temporary container on the same network:
+
+```
+sudo docker run -it --net hera --rm mysql mysql -hdb -uroot -p$HERA_DB_PASSWORD
+```
+
+Now we can start the Librarian itself. We also mount a volume of data so that
+there are things to look at. Finally, we expose the Librarian web interface on
 <http://localhost:21106/hl.php> in case you want to interact with it directly:
 
 ```
 DEMO_VOLUME=/b/hera-samples/digilab_pot0 # will likely vary
-sudo docker run -d --name librarian \
+sudo docker run -d --net hera --name librarian -h librarian \
   -e HERA_DB_PASSWORD=$HERA_DB_PASSWORD \
-  --link db:db \
   -v $DEMO_VOLUME:/hera/localstore/data \
   -p 21106:80 \
   hera-test-librarian:dev
@@ -213,21 +231,18 @@ this is by using a temporary client image that has access to the full software
 stack:
 
 ```
-sudo docker run --rm \
-  --link librarian:librarian \
+sudo docker run --rm --net hera \
   -v $DEMO_VOLUME:/data \
   hera-stack:dev /bin/bash -c \
-  "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543210\"}}}' >/.hl_client.cfg &&
+  "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
   /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*.uv"
 ```
 
-Now we can start up the RTP server. The RTP servers use hostnames to talk to each
-other, so it is helpful to set the hostnames in the containers to reasonable values:
+Now we can start up the RTP server:
 
 ```
-sudo docker run -d --name rtp-server \
+sudo docker run -d --net hera --name rtp-server -h rtp-server \
   -e HERA_DB_PASSWORD=$HERA_DB_PASSWORD \
-  --link db:db \
-  -h rtp-server \
-  hera-test-rtp-server:dev
+  -v $DEMO_VOLUME:/data \
+  hera-test-rtp:dev hera-bootup.sh --server
 ```

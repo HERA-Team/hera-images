@@ -11,7 +11,7 @@ set -e
 
 cat <<EOF >/var/www/html/hl_server.cfg
 { 
-"db_host": "$DB_PORT_3306_TCP_ADDR",
+"db_host": "db",
 "db_user": "root",
 "db_name": "hera_lib",
 "db_passwd": "$HERA_DB_PASSWORD",
