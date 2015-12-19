@@ -11,10 +11,13 @@ MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-    build-essential
+    build-essential \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN conda install -y \
+    basemap \
     ephem \
+    matplotlib \
     mysql-python \
     numpy \
     psutil \
@@ -29,6 +32,10 @@ RUN mkdir -p /hera
 
 COPY aipy /hera/aipy
 RUN cd /hera/aipy && \
+    python ./setup.py install
+
+COPY omnical /hera/omnical
+RUN cd /hera/omnical && \
     python ./setup.py install
 
 COPY capo /hera/capo
