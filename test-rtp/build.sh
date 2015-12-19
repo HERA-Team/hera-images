@@ -4,10 +4,10 @@
 
 usage="$0
 
-This script builds a Docker image for a Real Time Pipe (RTP) server. When the
-build is done, your Docker system will have a new image called
-\"hera-test-rtp-server:YYYYMMDD\" that you can then use, where YYYYMMDD
-encodes today's date."
+This script builds a Docker image for a Real Time Pipe (RTP) server or client.
+When the build is done, your Docker system will have a new image called
+\"hera-test-rtp:YYYYMMDD\" that you can then use, where YYYYMMDD encodes
+today's date."
 
 # Setup options and useful variables.
 
@@ -17,7 +17,7 @@ if [ ! -f $specdir/Dockerfile ] ; then
     exit 1
 fi
 
-imagename=hera-test-rtp-server:$(date +%Y%m%d)
+imagename=hera-test-rtp:$(date +%Y%m%d)
 
 : ${DOCKER:=sudo docker} # i.e., default $DOCKER to 'sudo docker' if unset
 
