@@ -28,7 +28,7 @@ files.
 * [`rsync-pot`]
 * [`test-db`]
 * [`test-librarian`]
-* [`test-rtp-server`]
+* [`test-rtp`]
 
 <!-- this awkward setup lets us hyperlink image descriptions more easily -->
 [`stack`]: #stack
@@ -36,7 +36,7 @@ files.
 [`rsync-pot`]: #rsync-pot
 [`test-db`]: #test-db
 [`test-librarian`]: #test-librarian
-[`test-rtp-server`]: #test-rtp-server
+[`test-rtp`]: #test-rtp
 
 
 `stack`
@@ -176,27 +176,25 @@ if you use Docker’s `-v` option to mount a Git checkout of the librarian at
 that location, you can test code changes on the fly.
 
 
-`test-rtp-server`
+`test-rtp`
 ----------------
 
 This image run the server that drives the RTP pipeline. It is based on the
-[`stack`] image.
+[`ssh-stack`] image.
 
 **Build.** Build this image by running the
-[test-rtp-server/build.sh](test-rtp-server/build.sh) script. The built image
-will be named something like `hera-test-rtp-server:YYYYMMDD`. It will also
-label that image as `hera-test-rtp-server:dev`.
+[test-rtp/build.sh](test-rtp/build.sh) script. The built image will be named
+something like `hera-test-rtp:YYYYMMDD`. It will also label that image as
+`hera-test-rtp:dev`.
 
-**Launch.** When launching the service, you must link it with a container
-running the [`test-db`] image under the internal name `db`. You must also set
-the `HERA_DB_PASSWORD` environment variable to the password used to access the
-database.
+**Launch.** When launching the service, you must set the `HERA_DB_PASSWORD`
+environment variable to the password used to access the database.
 
 An `EOFError` exception gets thrown on RTP startup, but it is in a background
 thread and can safely be ignored.
 
-**Access.** Once started, the service runs the RTP server, accessible on
-port 14204.
+**Access.** Once started, the service runs SSHD on port 22 and the very
+simplistic RTP HTTP server on port 14204.
 
 
 Running a Test Rig
@@ -264,5 +262,6 @@ Now we can start up the RTP server:
 sudo docker run -d --net hera --name rtp-server -h rtp-server \
   -e HERA_DB_PASSWORD=$HERA_DB_PASSWORD \
   -v $DEMO_VOLUME:/data \
+  -p 14204:14204 \
   hera-test-rtp:dev hera-bootup.sh --server
 ```
