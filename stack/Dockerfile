@@ -47,5 +47,6 @@ COPY librarian /hera/librarian
 
 COPY rtp /hera/rtp
 RUN mkdir -p /hera/rtp/log
+COPY fill-still-config.sh /hera/rtp/
 
 CMD ["/bin/bash"]

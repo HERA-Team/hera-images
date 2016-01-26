@@ -1,5 +1,5 @@
 #! /bin/bash
-# Copyright 2015 the HERA Collaboration
+# Copyright 2015-2016 the HERA Collaboration
 # Licensed under the MIT License.
 
 VOLUME=${VOLUME:-/data}
@@ -23,5 +23,10 @@ read only = false
 path = ${VOLUME}
 comment = ${VOLUME}
 EOF
+
+/hera/rtp/fill-still-config.sh
+
+# Meh, just run this in the background.
+/usr/sbin/sshd -D &
 
 exec /usr/bin/rsync --no-detach --daemon --config /etc/rsyncd.conf "$@"

@@ -20,6 +20,7 @@ omnical="$5"
 set -e
 stack/build.sh "$aipy" "$capo" "$librarian" "$rtp" "$omnical"
 ssh-stack/build.sh
+rsync-pot/build.sh
 test-db/build.sh
 test-librarian/build.sh "$librarian"
 test-rtp/build.sh

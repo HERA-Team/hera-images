@@ -8,12 +8,13 @@
 # https://github.com/nabeken/docker-volume-container-rsync . We then go ahead
 # and customize for HERA.
 
-FROM debian:jessie
+FROM hera-ssh-stack:dev
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-    rsync
+    rsync \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /data
 RUN chmod a+rw /data

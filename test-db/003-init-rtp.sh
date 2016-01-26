@@ -5,7 +5,9 @@
 set -e -x
 
 # Even though we're not doing anything real, still.py complains if we don't
-# have a full config file.
+# have a full config file. We also don't use fill-still-config.sh since we're
+# too weird: we have $MYSQL_ROOT_PASSWORD not $HERA_DB_PASSWORD and the host
+# should be localhost.
 
 cat <<EOF >/hera/rtp/etc/still.cfg
 [dbinfo]

@@ -1,5 +1,5 @@
 #! /bin/bash
-# Copyright 2015 the HERA Collaboration.
+# Copyright 2015-2016 the HERA Collaboration.
 # Licensed under the MIT License.
 
 usage="$0 <librarian>
@@ -38,6 +38,7 @@ work=$(mktemp -d)
 echo "Temporary work directory is $work ."
 $specdir/../fetch-tree.sh $librarian_url $work/librarian
 (cd $specdir && cp -a * .dockerignore $work)
+cp $specdir/../ssh-stack/insecure_* $specdir/../ssh-stack/ssh_host* $work
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."
 $DOCKER tag -f $imagename ${imagename%:*}:dev

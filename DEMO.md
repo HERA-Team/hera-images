@@ -136,7 +136,7 @@ data.
 ```
 sudo docker run -d --net hera --name librarian -h librarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/raw:/hera/localstore/data \
+  -v $DATA/raw:/data \
   -p 21106:80 \
   pkgw/hera-test-librarian
 ```
@@ -240,4 +240,54 @@ Finally, to clean up:
 ```
 sudo docker stop rtpclient rtpserver0 rtpserver1 librarian db
 sudo docker rm rtpclient rtpserver0 rtpserver1 librarian db
+```
+
+
+Demo: adding in a pot server
+============================
+
+The following commands basically run through the same setup as the previous
+demo, but store the data on a separate “pot” server that the Librarian and RTP
+copy files from and to.
+
+```
+sudo docker run -d --net hera --name db -h db \
+  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD hera-test-db:dev
+
+mkdir -p $DATA/pot0/pot0
+cp -a $DATA/raw/* $DATA/pot0/pot0
+
+sudo docker run -d --net hera --name pot0 -h pot0 \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -v $DATA/pot0:/data hera-rsync-pot:dev
+
+sudo docker run -d --net hera --name librarian -h librarian \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -v $DATA/librarian:/data \
+  -p 21106:80 \
+  hera-test-librarian:dev
+
+sudo docker exec pot0 /bin/bash -c \
+  "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
+  /hera/librarian/add_obs_librarian.py --site docker --store pot0 /data/pot0/*.uv"
+
+mkdir -p $DATA/rtpserver0
+
+sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -v $DATA/rtpserver0:/data \
+  hera-test-rtp:dev hera-bootup.sh --server
+
+sudo docker run -d --net hera --name rtpclient -h rtpclient \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -v $DATA/raw:/data \
+  hera-test-rtp:dev hera-bootup.sh --client
+
+sudo docker exec pot0 /bin/bash -c \
+  "/hera/rtp/bin/add_observations_paper.py /data/pot0/*.uv &&
+  "/hera/rtp/bin/reset_observations.py --file /data/pot0/*.uv"
+
+sudo docker stop rtpclient rtpserver0 librarian pot0 db
+
+sudo docker rm rtpclient rtpserver0 librarian pot0 db
 ```
