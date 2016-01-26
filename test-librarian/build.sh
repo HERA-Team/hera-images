@@ -41,6 +41,6 @@ $specdir/../fetch-tree.sh $librarian_url $work/librarian
 cp $specdir/../ssh-stack/insecure_* $specdir/../ssh-stack/ssh_host* $work
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."
-$DOCKER tag -f $imagename ${imagename%:*}:dev
+$DOCKER tag -f $imagename ${imagename%:*}:latest
 rm -rf $work
 exit 0

@@ -14,7 +14,7 @@
 # See https://github.com/docker-library/docs/tree/master/mysql for some docs
 # on how the base image works.
 
-FROM hera-stack:dev
+FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 # Duplicate the mysql setup of the official Docker MySQL image.

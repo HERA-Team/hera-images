@@ -8,7 +8,7 @@
 # https://github.com/nabeken/docker-volume-container-rsync . We then go ahead
 # and customize for HERA.
 
-FROM hera-ssh-stack:dev
+FROM hera-ssh-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \

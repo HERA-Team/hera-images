@@ -1,9 +1,9 @@
-# Copyright 2015 the HERA Collaboration
+# Copyright 2015-2016 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Build by running "build.sh".
 
-FROM hera-ssh-stack:dev
+FROM hera-ssh-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 COPY still.cfg.tmpl /hera/rtp/etc/

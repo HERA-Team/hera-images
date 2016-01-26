@@ -37,7 +37,7 @@ Docker image.
 
 **Build.** Build this image by running the [stack/build.sh](stack/build.sh)
 script. The built image will be named something like `hera-stack:YYYYMMDD`. It
-will also label that image as `hera-stack:dev`.
+will also label that image as `hera-stack:latest`.
 
 The build script takes 4 arguments pointing to Git repositories or checkouts
 for [Aipy], [Capo], the [HERA Librarian], and the [RTP].
@@ -63,7 +63,7 @@ services that expect to be able to do this.
 **Build.** Build this image by running the
 [ssh-stack/build.sh](ssh-stack/build.sh) script. The built image will be named
 something like `hera-ssh-stack:YYYYMMDD`. It will also label that image as
-`hera-ssh-stack:dev`.
+`hera-ssh-stack:latest`.
 
 **Launch.** This image needs no special setup to be launched.
 
@@ -84,7 +84,7 @@ I’m not currently doing anything with this image.
 **Build.** Build this image by running the
 [rsync-pot/build.sh](rsync-pot/build.sh) script. The built image will be named
 something like `hera-rsync-pot:YYYYMMDD`. It will also label that image as
-`hera-rsync-pot:dev`.
+`hera-rsync-pot:latest`.
 
 **Launch.** When you start a container based on this image, you may want to
 mount a volume at the location `/data` to pre-seed the image with data, or to
@@ -105,7 +105,7 @@ image.
 **Build.** Build this image by running the
 [test-db/build.sh](test-db/build.sh) script. The built image will be named
 something like `hera-test-db:YYYYMMDD`. It will also label that image as
-`hera-test-db:dev`.
+`hera-test-db:latest`.
 
 **Launch.** When you start a container based on this image, you must set the
 environment variable `MYSQL_ROOT_PASSWORD`.
@@ -141,7 +141,7 @@ application. It is based on the standard
 **Build.** Build this image by running the
 [test-librarian/build.sh](test-librarian/build.sh) script. The built image
 will be named something like `hera-test-librarian:YYYYMMDD`. It will also
-label that image as `hera-test-librarian:dev`.
+label that image as `hera-test-librarian:latest`.
 
 **Launch.** When launching the service, you must
 [“link”](https://docs.docker.com/v1.8/userguide/dockerlinks/) it with a
@@ -173,7 +173,7 @@ image.
 **Build.** Build this image by running the
 [test-rtp/build.sh](test-rtp/build.sh) script. The built image will be named
 something like `hera-test-rtp:YYYYMMDD`. It will also label that image as
-`hera-test-rtp:dev`.
+`hera-test-rtp:latest`.
 
 **Launch.** When launching the service, you must set the `HERA_DB_PASSWORD`
 environment variable to the password used to access the database. You must

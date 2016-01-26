@@ -31,6 +31,15 @@ sudo docker pull docker.io/pkgw/hera-test-rtp
 
 [Docker Hub]: https://hub.docker.com/
 
+Note that you need to rerun these commands to fetch updated versions of these
+images. For convenience we also give them shorter aliases:
+
+```
+sudo docker tag -f docker.io/pkgw/hera-test-db hera-test-db:latest
+sudo docker tag -f docker.io/pkgw/hera-test-librarian hera-test-librarian:latest
+sudo docker tag -f docker.io/pkgw/hera-test-rtp hera-test-rtp:latest
+```
+
 You will also need a data workspace. Set a shell variable `$DATA` to the path
 of some directory where you can fool around and write a few gigs of data. Of
 course, if you are typing the commands in multiple shells, or closing and
@@ -97,13 +106,13 @@ Demo: firing off RTP processing
 -------------------------------
 
 Now we can start with the fun stuff. The following command creates a Docker
-container named `db` that will run the `pkgw/hera-test-db` image — we are
+container named `db` that will run the `hera-test-db` image — we are
 essentially starting up a little encapsulated database server:
 
 ```
 sudo docker run -d --net hera --name db -h db \
   -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
-  pkgw/hera-test-db
+  hera-test-db
 ```
 
 Here’s a brief rundown of the options used here:
@@ -145,7 +154,7 @@ sudo docker run -d --net hera --name librarian -h librarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/librarian:/data \
   -p 21106:80 \
-  pkgw/hera-test-librarian
+  hera-test-librarian
 ```
 
 The extra options here are:
@@ -164,7 +173,7 @@ using a temporary client image that has access to the full software stack:
 ```
 sudo docker run --rm --net hera \
   -v $DATA/raw:/data \
-  pkgw/hera-test-db /bin/bash -c \
+  hera-test-db /bin/bash -c \
   "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
   /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*/*.uv"
 ```
@@ -183,13 +192,13 @@ sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver0:/data \
   -p 14204:14204 \
-  pkgw/hera-test-rtp hera-bootup.sh --server
+  hera-test-rtp hera-bootup.sh --server
 
 sudo docker run -d --net hera --name rtpserver1 -h rtpserver1 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver1:/data \
   -p 14205:14204 \
-  pkgw/hera-test-rtp hera-bootup.sh --server
+  hera-test-rtp hera-bootup.sh --server
 ```
 
 And an RTP client that will tell the servers what to do:
@@ -198,7 +207,7 @@ And an RTP client that will tell the servers what to do:
 sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/raw:/data \
-  pkgw/hera-test-rtp hera-bootup.sh --client
+  hera-test-rtp hera-bootup.sh --client
 ```
 
 Now we tell RTP about the data and reset the status of the observations to
@@ -255,12 +264,14 @@ Demo: adding in a pot server
 
 The following commands basically run through the same setup as the previous
 demo, but store the data on a separate “pot” server that the Librarian and RTP
-copy files from and to.
+copy files from and to. To run these without building images, you will need to
+run a `docker pull` command as at the top of this file but specifying the
+`hera-rsync-pot` repository.
 
 ```
 sudo docker run -d --net hera --name db -h db \
   -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
-  hera-test-db:dev
+  hera-test-db
 
 mkdir -p $DATA/pot0/
 cp -a $DATA/raw/* $DATA/pot0/
@@ -268,13 +279,13 @@ cp -a $DATA/raw/* $DATA/pot0/
 sudo docker run -d --net hera --name pot0 -h pot0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/pot0:/data \
-  hera-rsync-pot:dev
+  hera-rsync-pot
 
 sudo docker run -d --net hera --name librarian -h librarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/librarian:/data \
   -p 21106:80 \
-  hera-test-librarian:dev
+  hera-test-librarian
 
 sudo docker exec pot0 /bin/bash -c \
   "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
@@ -285,12 +296,12 @@ mkdir -p $DATA/rtpserver0
 sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver0:/data \
-  hera-test-rtp:dev hera-bootup.sh --server
+  hera-test-rtp hera-bootup.sh --server
 
 sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/raw:/data \
-  hera-test-rtp:dev hera-bootup.sh --client
+  hera-test-rtp hera-bootup.sh --client
 
 sudo docker exec pot0 /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"

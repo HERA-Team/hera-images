@@ -29,6 +29,6 @@ echo "Temporary work directory is $work ."
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."
-$DOCKER tag -f $imagename ${imagename%:*}:dev
+$DOCKER tag -f $imagename ${imagename%:*}:latest
 rm -rf $work
 exit 0

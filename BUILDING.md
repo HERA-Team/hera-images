@@ -51,9 +51,7 @@ repository in question; see the comments in [fetch-tree.sh](fetch-tree.sh).
 
 Running this script will create a Docker image named `hera-stack:YYYYMMDD`,
 where the bit after the colon is the date. It will also alias it to
-`hera-stack:dev`. **NOTE**: for the sample Docker commands in
-[DEMO.md](DEMO.md), you need to manually append the `:dev` suffix when writing
-the image names on the Docker command lines.
+`hera-stack:latest`.
 
 ```
 ./ssh-stack/build.sh
@@ -93,7 +91,7 @@ is <https://hub.docker.com/r/pkgw/>.
 push step will get pretty far before erroring out if you don’t!
 1. Once an image has been built locally, “tag” it to indicate that it should
 also be associated with an online registry: e.g. `sudo docker tag
-hera-stack:dev docker.io/pkgw/hera-stack:20160127`.
+hera-stack docker.io/pkgw/hera-stack:20160127`.
 1. Then “push” it to the repo.
 
 Overall, the usual pattern will be:

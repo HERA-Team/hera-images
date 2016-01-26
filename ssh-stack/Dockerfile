@@ -3,7 +3,7 @@
 #
 # Build by running "build.sh".
 
-FROM hera-stack:dev
+FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \

@@ -20,7 +20,7 @@ will copy the tree verbatim, including uncommitted changes and files. See the
 
 When the build completes, your Docker system will have a new image called
 \"hera-stack:YYYYMMDD\" that you can then use, where YYYYMMDD encodes today's
-date. The image will also be aliased to \"hera-stack:dev\"."
+date. The image will also be aliased to \"hera-stack:latest\"."
 
 if [ $# -ne 5 ] ; then
     echo >&2 "$usage"
@@ -58,6 +58,6 @@ $specdir/../fetch-tree.sh $rtp_url $work/rtp
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."
-$DOCKER tag -f $imagename ${imagename%:*}:dev
+$DOCKER tag -f $imagename ${imagename%:*}:latest
 rm -rf $work
 exit 0
