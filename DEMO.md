@@ -99,7 +99,8 @@ essentially starting up a little encapsulated database server:
 
 ```
 sudo docker run -d --net hera --name db -h db \
-  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD pkgw/hera-test-db
+  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
+  pkgw/hera-test-db
 ```
 
 Here’s a brief rundown of the options used here:
@@ -252,14 +253,16 @@ copy files from and to.
 
 ```
 sudo docker run -d --net hera --name db -h db \
-  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD hera-test-db:dev
+  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
+  hera-test-db:dev
 
 mkdir -p $DATA/pot0/pot0
 cp -a $DATA/raw/* $DATA/pot0/pot0
 
 sudo docker run -d --net hera --name pot0 -h pot0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/pot0:/data hera-rsync-pot:dev
+  -v $DATA/pot0:/data \
+  hera-rsync-pot:dev
 
 sudo docker run -d --net hera --name librarian -h librarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
