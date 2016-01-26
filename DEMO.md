@@ -234,3 +234,10 @@ Traceback (most recent call last):
     times0 = times[n.where(times < t1)]
 TypeError: unhashable type: 'numpy.ndarray'
 ```
+
+Finally, to clean up:
+
+```
+sudo docker stop rtpclient rtpserver0 rtpserver1 librarian db
+sudo docker rm rtpclient rtpserver0 rtpserver1 librarian db
+```
