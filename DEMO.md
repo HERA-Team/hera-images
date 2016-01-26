@@ -54,9 +54,12 @@ in `/data/pot0/zen.*.uv` on the `pot0` machine inside the Berkeley `digilab`
 test setup — the JDs range from 2456892.20012 to 2456892.70844, and the total
 size is about 0.5 GB. (By the way, with modern versions of SSH there are
 awesome ways to make it so that you can `scp` files from `pot0` directly to
-your local machine — ask Peter for the info.) There are also the data in
-`/data4/paper/HERA2015/2357*/` on `folio` at UPenn, but those are the `.uvA`
-files and I don’t think they’re fully raw.
+your local machine — ask Peter for the info.) **However**, the directory
+structure should go `<datadir>/<integer JD>/zen.*.uv`, so if you copy the
+digilab `pot0` files you need to put them inside a subdirectory named
+`2456892` in raw. There are also data in `/data4/paper/HERA2015/2457*/` on
+`folio` at UPenn, but those are the `.uvA` files and I don’t think they’re
+fully raw.
 
 **IMPORTANT**: if you’re running the demo on a Fedora or other SELinux-enabled
 machine, your Docker containers may not be allowed to access these directories
@@ -135,9 +138,12 @@ version is running on the HERA site, so it has access to the raw correlator
 data.
 
 ```
+mkdir -p $DATA/librarian/
+cp -a $DATA/raw/* $DATA/librarian/
+
 sudo docker run -d --net hera --name librarian -h librarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/raw:/data \
+  -v $DATA/librarian:/data \
   -p 21106:80 \
   pkgw/hera-test-librarian
 ```
@@ -160,7 +166,7 @@ sudo docker run --rm --net hera \
   -v $DATA/raw:/data \
   pkgw/hera-test-db /bin/bash -c \
   "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
-  /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*.uv"
+  /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*/*.uv"
 ```
 
 Now is a good time to visit <http://localhost:21106/hl.php> — you should see
@@ -203,8 +209,8 @@ inserted into the database; we can do this with the `docker exec` command.
 
 ```
 sudo docker exec rtpclient /bin/bash -c \
-  "/hera/rtp/bin/add_observations_paper.py /data/*.uv &&
-  /hera/rtp/bin/reset_observations.py --file /data/*.uv"
+  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
+  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 ```
 
 **XXX**: Somehow this crashes the client daemon! But you just need to stop and
@@ -245,7 +251,7 @@ sudo docker rm rtpclient rtpserver0 rtpserver1 librarian db
 
 
 Demo: adding in a pot server
-============================
+----------------------------
 
 The following commands basically run through the same setup as the previous
 demo, but store the data on a separate “pot” server that the Librarian and RTP
@@ -256,8 +262,8 @@ sudo docker run -d --net hera --name db -h db \
   -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
   hera-test-db:dev
 
-mkdir -p $DATA/pot0/pot0
-cp -a $DATA/raw/* $DATA/pot0/pot0
+mkdir -p $DATA/pot0/
+cp -a $DATA/raw/* $DATA/pot0/
 
 sudo docker run -d --net hera --name pot0 -h pot0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
@@ -272,7 +278,7 @@ sudo docker run -d --net hera --name librarian -h librarian \
 
 sudo docker exec pot0 /bin/bash -c \
   "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
-  /hera/librarian/add_obs_librarian.py --site docker --store pot0 /data/pot0/*.uv"
+  /hera/librarian/add_obs_librarian.py --site docker --store pot0 /data/*/*.uv"
 
 mkdir -p $DATA/rtpserver0
 
@@ -287,8 +293,12 @@ sudo docker run -d --net hera --name rtpclient -h rtpclient \
   hera-test-rtp:dev hera-bootup.sh --client
 
 sudo docker exec pot0 /bin/bash -c \
-  "/hera/rtp/bin/add_observations_paper.py /data/pot0/*.uv &&
-  "/hera/rtp/bin/reset_observations.py --file /data/pot0/*.uv"
+  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
+
+sudo docker exec pot0 /bin/bash -c \
+  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+
+# RTP crunching happens here
 
 sudo docker stop rtpclient rtpserver0 librarian pot0 db
 
