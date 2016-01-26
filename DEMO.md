@@ -172,7 +172,7 @@ using a temporary client image that has access to the full software stack:
 
 ```
 sudo docker run --rm --net hera \
-  -v $DATA/raw:/data \
+  -v $DATA/librarian:/data \
   hera-test-db /bin/bash -c \
   "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
   /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*/*.uv"
@@ -201,12 +201,13 @@ sudo docker run -d --net hera --name rtpserver1 -h rtpserver1 \
   hera-test-rtp hera-bootup.sh --server
 ```
 
-And an RTP client that will tell the servers what to do:
+And an RTP client that will tell the servers what to do. For simplicity we also have it
+host the raw data by aliasing it to the Librarian’s data directory:
 
 ```
 sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/raw:/data \
+  -v $DATA/librarian:/data \
   hera-test-rtp hera-bootup.sh --client
 ```
 
@@ -240,16 +241,6 @@ sudo docker logs -f rtpclient
 
 while will follow the log output of the client (hit control-C to quit showing
 the logs; this won’t disturb the container).
-
-**XXX**: RTP processing currently seems to fail on what looks like a genuine
-bug in `ddr_filter_coarse.py` during the `UVCRE` step:
-
-```
-Traceback (most recent call last):
-  File "/opt/conda/bin/ddr_filter_coarse.py", line 137, in <module>
-    times0 = times[n.where(times < t1)]
-TypeError: unhashable type: 'numpy.ndarray'
-```
 
 Finally, to clean up:
 
