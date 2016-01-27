@@ -101,7 +101,7 @@ date=$(date +%Y%m%d)
 user=pkgw
 base=hera-stack
 sudo docker tag $base:$date docker.io/$user/$base:$date
-sudo docker tag $base:$date docker.io/$user/$base:latest
+sudo docker tag -f $base:$date docker.io/$user/$base:latest
 sudo docker push docker.io/$user/$base:$date
 sudo docker push docker.io/$user/$base:latest
 ```
@@ -113,6 +113,7 @@ independently. Not the worst (if you’ve got OK bandwidth), but annoying.
 The images that need to be uploaded are:
 
 * `hera-stack`
+* `hera-rsync-pot`
 * `hera-test-db`
 * `hera-test-librarian`
 * `hera-test-rtp`
