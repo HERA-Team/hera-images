@@ -223,14 +223,6 @@ sudo docker exec rtpclient /bin/bash -c \
   /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 ```
 
-**XXX**: Somehow this crashes the client daemon! But you just need to stop and
-restart it:
-
-```
-sudo docker stop rtpclient
-sudo docker start rtpclient
-```
-
 If all is well this should set your RTP servers off to crunch the data, which
 should start appearing in `$DATA/rtpserver*`. You can monitor progress with
 commands like:
@@ -295,10 +287,8 @@ sudo docker run -d --net hera --name rtpclient -h rtpclient \
   hera-test-rtp hera-bootup.sh --client
 
 sudo docker exec pot0 /bin/bash -c \
-  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
-
-sudo docker exec pot0 /bin/bash -c \
-  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
+  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 
 # RTP crunching happens here
 
