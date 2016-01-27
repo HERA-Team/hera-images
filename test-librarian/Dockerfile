@@ -19,7 +19,7 @@ RUN apt-get update && \
 RUN docker-php-ext-install mysqli
 
 COPY librarian /var/www/html/
-COPY hera-bootup.sh /usr/local/bin/
+COPY launch.sh /
 COPY php.ini /usr/local/etc/php/
 COPY insecure_id_rsa /var/www/.ssh/id_rsa
 COPY insecure_id_rsa.pub /var/www/.ssh/id_rsa.pub
@@ -35,4 +35,4 @@ RUN echo -n '* ' >/var/www/.ssh/known_hosts && \
     chmod 600 /var/www/.ssh/*
 
 EXPOSE 80
-CMD ["hera-bootup.sh"]
+CMD ["/launch.sh"]

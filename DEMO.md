@@ -191,13 +191,13 @@ sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver0:/data \
   -p 14204:14204 \
-  hera-test-rtp hera-bootup.sh --server
+  hera-test-rtp /launch.sh --server
 
 sudo docker run -d --net hera --name rtpserver1 -h rtpserver1 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver1:/data \
   -p 14205:14204 \
-  hera-test-rtp hera-bootup.sh --server
+  hera-test-rtp /launch.sh --server
 ```
 
 And an RTP client that will tell the servers what to do. For simplicity we also have it
@@ -207,7 +207,7 @@ host the raw data by aliasing it to the Librarian’s data directory:
 sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/librarian:/data \
-  hera-test-rtp hera-bootup.sh --client
+  hera-test-rtp /launch.sh --client
 ```
 
 Now we tell RTP about the data and reset the status of the observations to
@@ -278,12 +278,12 @@ mkdir -p $DATA/rtpserver0
 sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver0:/data \
-  hera-test-rtp hera-bootup.sh --server
+  hera-test-rtp /launch.sh --server
 
 sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/raw:/data \
-  hera-test-rtp hera-bootup.sh --client
+  hera-test-rtp /launch.sh --client
 
 sudo docker exec pot0 /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&

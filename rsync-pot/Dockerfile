@@ -19,7 +19,7 @@ RUN apt-get update && \
 RUN mkdir -p /data
 RUN chmod a+rw /data
 
-ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+ADD entrypoint.sh /entrypoint.sh
 
 EXPOSE 873
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

@@ -177,8 +177,8 @@ something like `hera-test-rtp:YYYYMMDD`. It will also label that image as
 
 **Launch.** When launching the service, you must set the `HERA_DB_PASSWORD`
 environment variable to the password used to access the database. You must
-also specify the command to use: either `hera-bootup.sh --client`, or
-`hera-bootup.sh --server`, with the effects you'd expected.
+also specify the command to use: either `/launch.sh --client`, or `/launch.sh
+--server`, with the effects you'd expected.
 
 An `EOFError` exception gets thrown on RTP startup, but it is in a background
 thread and can safely be ignored.

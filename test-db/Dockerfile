@@ -39,7 +39,7 @@ RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf \
     && mv /tmp/my.cnf /etc/mysql/my.cnf
 VOLUME /var/lib/mysql
 
-COPY docker-entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Now do our own customization

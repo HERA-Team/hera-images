@@ -7,8 +7,8 @@ FROM hera-ssh-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 COPY still.cfg.tmpl /hera/rtp/etc/
-COPY hera-bootup.sh /usr/local/bin/
+COPY launch.sh /
 
 VOLUME /data
 EXPOSE 14204
-CMD ["hera-bootup.sh"]
+CMD ["/launch.sh"]
