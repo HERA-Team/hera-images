@@ -28,7 +28,7 @@ RUN conda install -y \
     configparser \
     pyfits
 
-COPY hera fill-still-config.sh /hera/
+COPY hera fill-still-config.sh hl_client.cfg /hera/
 
 RUN cd /hera/aipy && \
       python ./setup.py install && \
@@ -40,4 +40,6 @@ RUN cd /hera/aipy && \
     cd /hera/rtp && \
       mkdir -p log etc && \
     cd /hera/mandc && \
-      python ./setup.py install
+      python ./setup.py install && \
+    cp /hera/hl_client.cfg /.hl_client.cfg && \
+    cp /hera/hl_client.cfg /root/.hl_client.cfg

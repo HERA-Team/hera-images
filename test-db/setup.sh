@@ -45,9 +45,12 @@ mv /tmp/my.cnf /etc/mysql/my.cnf
 
 # HERA customization:
 
-echo "create database hera_lib; use hera_lib;" >/docker-entrypoint-initdb.d/000-create-librarian.sql
-cat /hera/librarian/hl_schema.sql /hera/librarian/hl_constraints.sql \
-  >>/docker-entrypoint-initdb.d/000-create-librarian.sql
+libsetup=/docker-entrypoint-initdb.d/000-create-librarian.sql
+echo "create database hera_lib_onsite; use hera_lib_onsite;" >$libsetup
+cat /hera/librarian/hl_schema.sql /hera/librarian/hl_constraints.sql >>$libsetup
+echo "create database hera_lib_offsite; use hera_lib_offsite;" >>$libsetup
+cat /hera/librarian/hl_schema.sql /hera/librarian/hl_constraints.sql >>$libsetup
+
 cp /setup/00* /docker-entrypoint-initdb.d/
 
 # Self-destruct!

@@ -65,7 +65,7 @@ awesome ways to make it so that you can `scp` files from `pot0` directly to
 your local machine — ask Peter for the info.) **However**, the directory
 structure should go `<datadir>/<integer JD>/zen.*.uv`, so if you copy the
 digilab `pot0` files you need to put them inside a subdirectory named
-`2456892` in raw. There are also data in `/data4/paper/HERA2015/2457*/` on
+`2456892` in `raw`. There are also data in `/data4/paper/HERA2015/2457*/` on
 `folio` at UPenn, but those are the `.uvA` files and I don’t think they’re
 fully raw.
 
@@ -146,14 +146,14 @@ version is running on the HERA site, so it has access to the raw correlator
 data.
 
 ```
-mkdir -p $DATA/librarian/
-cp -a $DATA/raw/* $DATA/librarian/
+mkdir -p $DATA/onsitelibrarian/
+cp -a $DATA/raw/* $DATA/onsitelibrarian/
 
-sudo docker run -d --net hera --name librarian -h librarian \
+sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/librarian:/data \
+  -v $DATA/onsitelibrarian:/data \
   -p 21106:80 \
-  hera-test-librarian
+  hera-test-librarian /launch.sh onsite
 ```
 
 The extra options here are:
@@ -171,10 +171,9 @@ using a temporary client image that has access to the full software stack:
 
 ```
 sudo docker run --rm --net hera \
-  -v $DATA/librarian:/data \
+  -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
-  "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
-  /hera/librarian/add_obs_librarian.py --site docker --store liblocal /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store liblocal /data/*/*.uv"
 ```
 
 Now is a good time to visit <http://localhost:21106/hl.php> — you should see
@@ -206,7 +205,7 @@ host the raw data by aliasing it to the Librarian’s data directory:
 ```
 sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/librarian:/data \
+  -v $DATA/onsitelibrarian:/data \
   hera-test-rtp /launch.sh --client
 ```
 
@@ -236,8 +235,8 @@ the logs; this won’t disturb the container).
 Finally, to clean up:
 
 ```
-sudo docker stop rtpclient rtpserver0 rtpserver1 librarian db
-sudo docker rm rtpclient rtpserver0 rtpserver1 librarian db
+sudo docker stop rtpclient rtpserver0 rtpserver1 onsitelibrarian db
+sudo docker rm rtpclient rtpserver0 rtpserver1 onsitelibrarian db
 ```
 
 
@@ -255,23 +254,22 @@ sudo docker run -d --net hera --name db -h db \
   -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
   hera-test-db
 
-mkdir -p $DATA/pot0/
-cp -a $DATA/raw/* $DATA/pot0/
+mkdir -p $DATA/onsitepot/
+cp -a $DATA/raw/* $DATA/onsitepot/
 
-sudo docker run -d --net hera --name pot0 -h pot0 \
+sudo docker run -d --net hera --name onsitepot -h onsitepot \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/pot0:/data \
+  -v $DATA/onsitepot:/data \
   hera-rsync-pot
 
-sudo docker run -d --net hera --name librarian -h librarian \
+sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
-  -v $DATA/librarian:/data \
+  -v $DATA/onsitelibrarian:/data \
   -p 21106:80 \
-  hera-test-librarian
+  hera-test-librarian /launch.sh onsite
 
-sudo docker exec pot0 /bin/bash -c \
-  "echo '{\"sites\":{\"docker\":{\"url\":\"http://librarian/\",\"authenticator\":\"9876543211\"}}}' >/.hl_client.cfg &&
-  /hera/librarian/add_obs_librarian.py --site docker --store pot0 /data/*/*.uv"
+sudo docker exec onsitepot /bin/bash -c \
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv"
 
 mkdir -p $DATA/rtpserver0
 
@@ -285,13 +283,12 @@ sudo docker run -d --net hera --name rtpclient -h rtpclient \
   -v $DATA/raw:/data \
   hera-test-rtp /launch.sh --client
 
-sudo docker exec pot0 /bin/bash -c \
+sudo docker exec onsitepot /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
   /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 
 # RTP crunching happens here
 
-sudo docker stop rtpclient rtpserver0 librarian pot0 db
-
-sudo docker rm rtpclient rtpserver0 librarian pot0 db
+sudo docker stop rtpclient rtpserver0 onsitelibrarian onsitepot db
+sudo docker rm rtpclient rtpserver0 onsitelibrarian onsitepot db
 ```
