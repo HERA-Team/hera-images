@@ -38,6 +38,7 @@ work=$(mktemp -d)
 echo "Temporary work directory is $work ."
 $specdir/../fetch-tree.sh $librarian_url $work/librarian
 (cd $specdir && cp -a * .dockerignore $work)
+cp $specdir/../stack/hl_client.cfg $work
 cp $specdir/../ssh-stack/insecure_* $specdir/../ssh-stack/ssh_host* $work
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."

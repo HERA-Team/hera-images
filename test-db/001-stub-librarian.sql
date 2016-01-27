@@ -13,19 +13,26 @@ insert into store (
   name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values (
   /* 100 GiB capacity; rsync pots do not run httpd but set http_prefix anyway */
-  "onsitepot", NOW(), 107374182400, 0, "onsitepot", "http://onsitepot/data", "/data", "root@onsitepot", 0
+  "onsitepot", NOW(), 107374182400, 0, "root@onsitepot:/data", "http://onsitepot/data", "/data", "root@onsitepot", 0
 );
 
 insert into store (
   name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values (
-  "offsitepot", NOW(), 107374182400, 0, "offsitepot", "http://offsitepot/data", "/data", "root@offsitepot", 0
+  "offsitepot", NOW(), 107374182400, 0, "root@offsitepot:/data", "http://offsitepot/data", "/data", "root@offsitepot", 0
 );
 
 insert into store (
   name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values (
-  "liblocal", NOW(), 107374182400, 0, "", "", "/data", "", 0
+  /* We must blank out `ssh_prefix` for our local store, but not `rsync_prefix`*/
+  "onsitelibrarian", NOW(), 107374182400, 0, "root@onsitelibrarian:/data", "", "/data", "", 0
+);
+
+insert into store (
+  name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
+) values (
+  "offsitelibrarian", NOW(), 107374182400, 0, "root@offsitelibrarian:/data", "", "/data", "root@offsitelibrarian", 0
 );
 
 
@@ -37,17 +44,24 @@ insert into source (name, authenticator, create_time) values ("Correlator", "987
 insert into store (
   name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values (
-  "onsitepot", NOW(), 107374182400, 0, "onsitepot", "http://onsitepot/data", "/data", "root@onsitepot", 0
+  "onsitepot", NOW(), 107374182400, 0, "root@onsitepot:/data", "http://onsitepot/data", "/data", "root@onsitepot", 0
 );
 
 insert into store (
   name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values (
-  "offsitepot", NOW(), 107374182400, 0, "offsitepot", "http://offsitepot/data", "/data", "root@offsitepot", 0
+  "offsitepot", NOW(), 107374182400, 0, "root@offsitepot:/data", "http://offsitepot/data", "/data", "root@offsitepot", 0
 );
 
 insert into store (
   name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values (
-  "liblocal", NOW(), 107374182400, 0, "", "", "/data", "", 0
+  "onsitelibrarian", NOW(), 107374182400, 0, "root@onsitelibrarian:/data", "", "/data", "root@onsitelibrarian", 0
+);
+
+insert into store (
+  name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
+) values (
+  /* We must blank out `ssh_prefix` for our local store, but not `rsync_prefix` */
+  "offsitelibrarian", NOW(), 107374182400, 0, "root@offsitelibrarian:/data", "", "/data", "", 0
 );

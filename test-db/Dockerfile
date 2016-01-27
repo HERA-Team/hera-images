@@ -17,8 +17,10 @@
 FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
-COPY 00* setup.sh /setup/
-RUN /bin/bash /setup/setup.sh
+COPY setup1.sh /setup/
+RUN /bin/bash /setup/setup1.sh
+COPY 00* setup2.sh /setup/
+RUN /bin/bash /setup/setup2.sh
 
 VOLUME /var/lib/mysql
 EXPOSE 3306

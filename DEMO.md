@@ -173,7 +173,7 @@ using a temporary client image that has access to the full software stack:
 sudo docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store liblocal /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
 ```
 
 Now is a good time to visit <http://localhost:21106/hl.php> — you should see
@@ -291,4 +291,52 @@ sudo docker exec onsitepot /bin/bash -c \
 
 sudo docker stop rtpclient rtpserver0 onsitelibrarian onsitepot db
 sudo docker rm rtpclient rtpserver0 onsitelibrarian onsitepot db
+```
+
+
+Demo: file transfer offsite between Librarians
+----------------------------------------------
+
+The librarian containers don't run `sshd`, so we can’t `rsync` to them
+directly — to test out the syncing we need to create an offsite pot.
+
+```
+sudo docker run -d --net hera --name db -h db \
+  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
+  hera-test-db
+
+mkdir -p $DATA/onsitelibrarian/
+cp -a $DATA/raw/* $DATA/onsitelibrarian/
+
+sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -v $DATA/onsitelibrarian:/data \
+  -p 21106:80 \
+  hera-test-librarian /launch.sh onsite
+
+mkdir -p $DATA/offsitepot/
+
+sudo docker run -d --net hera --name offsitepot -h offsitepot \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -v $DATA/offsitepot:/data \
+  hera-rsync-pot
+
+sudo docker run -d --net hera --name offsitelibrarian -h offsitelibrarian \
+  -e HERA_DB_PASSWORD=$DB_PASSWORD \
+  -p 21107:80 \
+  hera-test-librarian /launch.sh offsite
+
+sudo docker run --rm --net hera \
+  -v $DATA/onsitelibrarian:/data \
+  hera-test-db /bin/bash -c \
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
+
+sudo docker exec onsitelibrarian /bin/bash -c \
+  "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
+
+sudo docker exec onsitelibrarian /bin/bash -c \
+  "/var/www/html/copy_master"
+
+sudo docker stop onsitelibrarian offsitelibrarian offsitepot db
+sudo docker rm onsitelibrarian offsitelibrarian offsitepot db
 ```

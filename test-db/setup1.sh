@@ -1,9 +1,11 @@
-# /binb/bash
+# /bin/bash
 # Copyright 2016 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Based on the official Docker MySQL image, but we've added this setup script
-# to significantly streamline the image generation.
+# to significantly streamline the image generation. The init is split into two
+# pieces so that it's quick to rebuild when we're only changing the database
+# initialization.
 
 MYSQL_MAJOR=5.7
 MYSQL_VERSION=5.7.10-1debian7
@@ -43,16 +45,4 @@ echo "skip-host-cache
 skip-name-resolve" | awk '{ print } $1 == "[mysqld]" && c == 0 { c = 1; system("cat") }' /etc/mysql/my.cnf >/tmp/my.cnf
 mv /tmp/my.cnf /etc/mysql/my.cnf
 
-# HERA customization:
-
-libsetup=/docker-entrypoint-initdb.d/000-create-librarian.sql
-echo "create database hera_lib_onsite; use hera_lib_onsite;" >$libsetup
-cat /hera/librarian/hl_schema.sql /hera/librarian/hl_constraints.sql >>$libsetup
-echo "create database hera_lib_offsite; use hera_lib_offsite;" >>$libsetup
-cat /hera/librarian/hl_schema.sql /hera/librarian/hl_constraints.sql >>$libsetup
-
-cp /setup/00* /docker-entrypoint-initdb.d/
-
-# Self-destruct!
-cd /
-rm -rf /setup
+# No self-destruct -- that's setup2.sh's job.
