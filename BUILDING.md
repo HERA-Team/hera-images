@@ -12,6 +12,10 @@ the Docker images. Fortunately, the process should be straightforward.
 [HERA]: http://reionization.org/
 [Docker Hub]: https://hub.docker.com/
 
+It takes about 8 minutes to rebuild all of the images on my machine. The time
+it takes will depend on your network connection, though, since the build
+process involves downloading a lot of software.
+
 
 Preliminaries
 -------------
