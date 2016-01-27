@@ -7,9 +7,9 @@ FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-    openssh-server && \
-  rm -rf /var/lib/apt/lists/*
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    openssh-server \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/sshd /root/.ssh
 

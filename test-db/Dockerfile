@@ -21,7 +21,11 @@ MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 RUN mkdir /docker-entrypoint-initdb.d
-RUN apt-get update && apt-get install -y perl pwgen --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    perl \
+    pwgen \
+  && rm -rf /var/lib/apt/lists/*
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys A4A9406876FCBD3C456770C88C718D3B5072E1F5
 ENV MYSQL_MAJOR 5.7
 ENV MYSQL_VERSION 5.7.10-1debian7
@@ -32,7 +36,10 @@ RUN { \
 	echo mysql-community-server mysql-community-server/re-root-pass password ''; \
 	echo mysql-community-server mysql-community-server/remove-test-db select false; \
     } | debconf-set-selections \
-    && apt-get update && apt-get install -y mysql-community-server="${MYSQL_VERSION}" && rm -rf /var/lib/apt/lists/* \
+    && apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+      mysql-community-server="${MYSQL_VERSION}" \
+    && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql
 RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf \
     && echo 'skip-host-cache\nskip-name-resolve' | awk '{ print } $1 == "[mysqld]" && c == 0 { c = 1; system("cat") }' /etc/mysql/my.cnf > /tmp/my.cnf \

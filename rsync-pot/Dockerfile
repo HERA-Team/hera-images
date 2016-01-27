@@ -12,7 +12,7 @@ FROM hera-ssh-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     rsync \
   && rm -rf /var/lib/apt/lists/*
 

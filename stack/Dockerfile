@@ -10,7 +10,7 @@ FROM continuumio/miniconda:3.18.3p0
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     build-essential \
   && rm -rf /var/lib/apt/lists/*
 

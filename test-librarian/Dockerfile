@@ -11,7 +11,7 @@ FROM php:7.0-apache
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     openssh-client \
     zip \
   && rm -rf /var/lib/apt/lists/*
