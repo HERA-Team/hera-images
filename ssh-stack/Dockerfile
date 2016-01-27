@@ -1,4 +1,4 @@
-# Copyright 2015 the HERA Collaboration
+# Copyright 2015-2016 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Build by running "build.sh".
@@ -24,7 +24,8 @@ RUN echo -n '* ' >/root/.ssh/known_hosts && \
     cat /etc/ssh/ssh_host_rsa_key.pub >>/root/.ssh/known_hosts && \
     chmod 700 /root/.ssh && \
     chmod 600 /root/.ssh/* && \
-    rm -f /etc/ssh/ssh_host_dsa* /etc/ssh/ssh_host_ecdsa*
+    rm -f /etc/ssh/ssh_host_dsa* /etc/ssh/ssh_host_ecdsa* && \
+    chmod 600 /etc/ssh/ssh_host*
 
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
