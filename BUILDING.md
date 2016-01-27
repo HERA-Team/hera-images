@@ -110,6 +110,8 @@ sudo docker push docker.io/$user/$base:$date
 sudo docker push docker.io/$user/$base:latest
 ```
 
+This is automated in the [publish.sh](publish.sh) shell script.
+
 **XXX**: Having a separate repository for each element of the stack means I
 have to rendundantly upload the data for the software stack to each one
 independently. Not the worst (if you’ve got OK bandwidth), but annoying.
