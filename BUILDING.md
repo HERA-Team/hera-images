@@ -35,7 +35,7 @@ repositories:
 * the RTP (AKA “still”; e.g. [Peters’s fork](https://github.com/pkgw/hera-real-time-pipe/),
   [Jon Ringuette’s fork](https://github.com/jonr667/still_workflow/))
 * the Monitor and Control subsystem (e.g. [Peters’s fork](https://github.com/pkgw/hera-monitor-and-control/),
-  [Jon Ringuette’s fork](https://github.com/HERA-Team/Monitor_and_Control/))
+  [HERA-Team fork](https://github.com/HERA-Team/Monitor_and_Control/))
 
 **NOTE**: some of my forks have fixes needed to get things to work!
 
