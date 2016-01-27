@@ -33,7 +33,9 @@ repositories:
 * the Librarian (e.g. [Peters’s fork](https://github.com/pkgw/hera-librarian/),
   [David Anderson’s fork](https://github.com/davidpanderson/hera/))
 * the RTP (AKA “still”; e.g. [Peters’s fork](https://github.com/pkgw/hera-real-time-pipe/),
-  [Jon Ringuette’s fork](https://github.com/jonr667/still_workflow))
+  [Jon Ringuette’s fork](https://github.com/jonr667/still_workflow/))
+* the Monitor and Control subsystem (e.g. [Peters’s fork](https://github.com/pkgw/hera-monitor-and-control/),
+  [Jon Ringuette’s fork](https://github.com/HERA-Team/Monitor_and_Control/))
 
 **NOTE**: some of my forks have fixes needed to get things to work!
 
@@ -45,7 +47,7 @@ I’ve written scripts that run the appropriate `docker build` commands. Run the
 as follows. First:
 
 ```
-./stack/build.sh <aipy> <capo> <librarian> <rtp> <omnical>
+./stack/build.sh <aipy> <omnical> <capo> <librarian> <rtp> <m&c>
 ```
 
 Here, each bracketed term should be the path to the corresponding Git

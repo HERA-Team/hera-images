@@ -1,4 +1,4 @@
-# Copyright 2015 the HERA Collaboration
+# Copyright 2015-2016 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Build by running "build.sh"; see ../README.md for more information.
@@ -48,5 +48,9 @@ COPY librarian /hera/librarian
 COPY rtp /hera/rtp
 RUN mkdir -p /hera/rtp/log
 COPY fill-still-config.sh /hera/rtp/
+
+COPY mandc /hera/mandc
+RUN cd /hera/mandc && \
+    python ./setup.py install
 
 CMD ["/bin/bash"]
