@@ -25,9 +25,9 @@ HERA code, but it’s easiest to do so. You should check out the following
 repositories:
 
 * AIPY (e.g. [Peters’s fork](https://github.com/pkgw/aipy/),
-  [Aaron’s fork](https://github.com/AaronParsons/aipy/)
+  [Aaron’s fork](https://github.com/AaronParsons/aipy/))
 * Omnical (e.g. [Peters’s fork](https://github.com/pkgw/omnical/),
-  [Aaron’s fork](https://github.com/AaronParsons/omnical/)
+  [Aaron’s fork](https://github.com/AaronParsons/omnical/))
 * CAPO (e.g. [Peters’s fork](https://github.com/pkgw/capo/),
   [Danny’s fork](https://github.com/dannyjacobs/capo/))
 * the Librarian (e.g. [Peters’s fork](https://github.com/pkgw/hera-librarian/),
