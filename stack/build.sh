@@ -51,12 +51,13 @@ imagename=hera-stack:$(date +%Y%m%d)
 set -e
 work=$(mktemp -d)
 echo "Temporary work directory is $work ."
-$specdir/../fetch-tree.sh $aipy_url $work/aipy
-$specdir/../fetch-tree.sh $omnical_url $work/omnical
-$specdir/../fetch-tree.sh $capo_url $work/capo
-$specdir/../fetch-tree.sh $librarian_url $work/librarian
-$specdir/../fetch-tree.sh $rtp_url $work/rtp
-$specdir/../fetch-tree.sh $mandc_url $work/mandc
+mkdir $work/hera
+$specdir/../fetch-tree.sh $aipy_url $work/hera/aipy
+$specdir/../fetch-tree.sh $omnical_url $work/hera/omnical
+$specdir/../fetch-tree.sh $capo_url $work/hera/capo
+$specdir/../fetch-tree.sh $librarian_url $work/hera/librarian
+$specdir/../fetch-tree.sh $rtp_url $work/hera/rtp
+$specdir/../fetch-tree.sh $mandc_url $work/hera/mandc
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."

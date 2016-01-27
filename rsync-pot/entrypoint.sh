@@ -24,7 +24,7 @@ path = ${VOLUME}
 comment = ${VOLUME}
 EOF
 
-/hera/rtp/fill-still-config.sh
+/hera/fill-still-config.sh
 
 # Meh, just run this in the background.
 /usr/sbin/sshd -D &

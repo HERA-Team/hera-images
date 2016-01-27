@@ -10,7 +10,7 @@
 # that more modern Docker setups discourage this approach; I don't know what
 # the encouraged method is now, though.
 
-cat <<EOF >$(dirname $0)/etc/still.cfg
+cat <<EOF >$(dirname $0)/rtp/etc/still.cfg
 [dbinfo]
 dbuser = root
 dbpasswd = $HERA_DB_PASSWORD

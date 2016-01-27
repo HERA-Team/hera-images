@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 
 set -e
-/hera/rtp/fill-still-config.sh
+/hera/fill-still-config.sh
 
 # Meh, just run this in the background.
 /usr/sbin/sshd -D &

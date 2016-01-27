@@ -12,7 +12,8 @@ MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     build-essential \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* && \
+  mkdir -p /hera
 
 RUN conda install -y \
     basemap \
@@ -22,35 +23,21 @@ RUN conda install -y \
     numpy \
     psutil \
     scipy \
-    sqlalchemy
-
-RUN pip install \
+    sqlalchemy \
+  && pip install \
     configparser \
     pyfits
 
-RUN mkdir -p /hera
+COPY hera fill-still-config.sh /hera/
 
-COPY aipy /hera/aipy
 RUN cd /hera/aipy && \
-    python ./setup.py install
-
-COPY omnical /hera/omnical
-RUN cd /hera/omnical && \
-    python ./setup.py install
-
-COPY capo /hera/capo
-RUN cd /hera/capo && \
-    (cd Compress/ddr_compress && python setup.py install) && \
-    python ./setup.py install
-
-COPY librarian /hera/librarian
-
-COPY rtp /hera/rtp
-RUN mkdir -p /hera/rtp/log
-COPY fill-still-config.sh /hera/rtp/
-
-COPY mandc /hera/mandc
-RUN cd /hera/mandc && \
-    python ./setup.py install
-
-CMD ["/bin/bash"]
+      python ./setup.py install && \
+    cd /hera/omnical && \
+      python ./setup.py install && \
+    cd /hera/capo && \
+      (cd Compress/ddr_compress && python setup.py install) && \
+      python ./setup.py install && \
+    cd /hera/rtp && \
+      mkdir -p log etc && \
+    cd /hera/mandc && \
+      python ./setup.py install
