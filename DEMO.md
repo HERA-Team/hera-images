@@ -69,15 +69,15 @@ digilab `pot0` files you need to put them inside a subdirectory named
 `folio` at UPenn, but those are the `.uvA` files and I don’t think they’re
 fully raw.
 
-**IMPORTANT**: if you’re running the demo on a Fedora or other SELinux-enabled
-machine, your Docker containers may not be allowed to access these directories
-by default. The files will appear inside the container but any access attempt
-will result in “Permission denied” even when it looks like everything should
-be OK. In that case, run:
-
-```
-sudo chcon -Rt svirt_sandbox_file_t $DATA
-```
+> **IMPORTANT**: if you’re running the demo on a Fedora or other SELinux-enabled
+> machine, your Docker containers may not be allowed to access these directories
+> by default. The files will appear inside the container but any access attempt
+> will result in “Permission denied” even when it looks like everything should
+> be OK. In that case, run:
+>
+> ```
+> sudo chcon -Rt svirt_sandbox_file_t $DATA
+> ```
 
 To allow the different services to automatically be able to look up each
 other’s host names, we need to create a special virtual “network” in Docker
@@ -89,8 +89,8 @@ sudo docker network create -d bridge hera
 
 You only need to run this command the first time you try any of this stuff out.
 
-**TODO**: I think this command requires a relatively recent version of Docker
-— how recent?
+> **TODO**: I think this command requires a relatively recent version of Docker
+> — how recent?
 
 We also need to set the database password as a shell variable. The database
 won’t be visible outside of your machine so it doesn’t need to be a good
