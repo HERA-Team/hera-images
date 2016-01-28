@@ -17,6 +17,7 @@ First, I am assuming some broad familiarity with [Docker] here. Fortunately,
 Docker is so hot right now, so if you need a more general introduction or
 leads on a non-HERA-specific problem,
 [we can help you with that](https://www.google.com/search?q=docker%20tutorial).
+**The HERA test setup requires Docker version 1.9 or newer.**
 
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having
@@ -24,9 +25,9 @@ to build them yourself, but for a quick test you can fetch them off of the
 [Docker Hub]. This involves dowloading about 4 gigs of data. Run:
 
 ```
-sudo docker pull docker.io/pkgw/hera-test-db:20160127
-sudo docker pull docker.io/pkgw/hera-test-librarian:20160127
-sudo docker pull docker.io/pkgw/hera-test-rtp:20160127
+sudo docker pull docker.io/pkgw/hera-test-db:20160128
+sudo docker pull docker.io/pkgw/hera-test-librarian:20160128
+sudo docker pull docker.io/pkgw/hera-test-rtp:20160128
 ```
 
 [Docker Hub]: https://hub.docker.com/
@@ -34,9 +35,9 @@ sudo docker pull docker.io/pkgw/hera-test-rtp:20160127
 For convenience we also give them shorter aliases:
 
 ```
-sudo docker tag -f docker.io/pkgw/hera-test-db:20160127 hera-test-db:latest
-sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160127 hera-test-librarian:latest
-sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160127 hera-test-rtp:latest
+sudo docker tag -f docker.io/pkgw/hera-test-db:20160128 hera-test-db:latest
+sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160128 hera-test-librarian:latest
+sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160128 hera-test-rtp:latest
 ```
 
 You will also need a data workspace. Set a shell variable `$DATA` to the path
@@ -88,9 +89,6 @@ sudo docker network create -d bridge hera
 ```
 
 You only need to run this command the first time you try any of this stuff out.
-
-> **TODO**: I think this command requires a relatively recent version of Docker
-> — how recent?
 
 We also need to set the database password as a shell variable. The database
 won’t be visible outside of your machine so it doesn’t need to be a good
@@ -176,8 +174,8 @@ sudo docker run --rm --net hera \
   "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
 ```
 
-Now is a good time to visit <http://localhost:21106/hl.php> — you should see
-the raw data listed in its output.
+Now is a good time to visit <http://localhost:21106/hl.php> (with `9876543211`
+as the authenticator) — you should see the raw data listed in its output.
 
 Now we can start up a couple of RTP servers that will crunch data for us. If
 you’re running and re-running the demo, you should probably blow away their
