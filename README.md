@@ -17,6 +17,8 @@ For a list of the various images that are defined and how they expect to
 interface with one another, see [IMAGES](IMAGES.md).
 
 To learn how to build new images on your machine, see [BUILDING](BUILDING.md).
+Prebuilt images are available at [pkgw’s account on Docker
+Hub](https://hub.docker.com/r/pkgw/).
 
 
 Copyright
