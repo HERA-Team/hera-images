@@ -108,7 +108,7 @@ essentially starting up a little encapsulated database server:
 
 ```
 sudo docker run -d --net hera --name db -h db \
-  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
+  -e POSTGRES_PASSWORD=$DB_PASSWORD \
   hera-test-db
 ```
 
@@ -122,18 +122,18 @@ Here’s a brief rundown of the options used here:
   refer to it in subsequent `docker` commands.
 * The `-h db` option sets the container’s hostname on the network. This is
   needed so that other servers can find it.
-* The `-e MYSQL_ROOT_PASSWORD=$DB_PASSWORD` option sets an environment
+* The `-e POSTGRES_PASSWORD=$DB_PASSWORD` option sets an environment
   variable inside the container that, by the convention used in this particular
   image, sets the database’s root password.
 
 If you ever want to examine the database directly, you can do so by running
-the MySQL command-line client in a temporary container on the same network:
+the Postgres command-line client in a temporary container on the same network:
 
 ```
-sudo docker run -it --net hera --rm mysql mysql -hdb -uroot -p$DB_PASSWORD
+sudo docker run -it --net hera --rm hera-test-db psql -hdb -Upostgres
 ```
 
-And if you want to see the logs from the MySQL server, run:
+And if you want to see the logs from the Postgres server, run:
 
 ```
 sudo docker logs db
@@ -249,7 +249,7 @@ run a `docker pull` command as at the top of this file but specifying the
 
 ```
 sudo docker run -d --net hera --name db -h db \
-  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
+  -e POSTGRES_PASSWORD=$DB_PASSWORD \
   hera-test-db
 
 mkdir -p $DATA/onsitepot/
@@ -300,7 +300,7 @@ directly — to test out the syncing we need to create an offsite pot.
 
 ```
 sudo docker run -d --net hera --name db -h db \
-  -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD \
+  -e POSTGRES_PASSWORD=$DB_PASSWORD \
   hera-test-db
 
 mkdir -p $DATA/onsitelibrarian/

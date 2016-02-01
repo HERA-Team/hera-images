@@ -19,9 +19,9 @@ RUN conda install -y \
     basemap \
     ephem \
     matplotlib \
-    mysql-python \
     numpy \
     psutil \
+    psycopg2 \
     scipy \
     sqlalchemy \
   && pip install \

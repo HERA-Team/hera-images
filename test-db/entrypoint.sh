@@ -1,112 +1,101 @@
 #!/bin/bash
 set -e
 
-# if command starts with an option, prepend mysqld
-if [ "${1:0:1}" = '-' ]; then
-	set -- mysqld "$@"
-fi
+set_listen_addresses() {
+	sedEscapedValue="$(echo "$1" | sed 's/[\/&]/\\&/g')"
+	sed -ri "s/^#?(listen_addresses\s*=\s*)\S+/\1'$sedEscapedValue'/" "$PGDATA/postgresql.conf"
+}
 
-if [ "$1" = 'mysqld' ]; then
-	# Get config
-	DATADIR="$("$@" --verbose --help 2>/dev/null | awk '$1 == "datadir" { print $2; exit }')"
+if [ "$1" = 'postgres' ]; then
+	mkdir -p "$PGDATA"
+	chmod 700 "$PGDATA"
+	chown -R postgres "$PGDATA"
 
-	if [ ! -d "$DATADIR/mysql" ]; then
-		if [ -z "$MYSQL_ROOT_PASSWORD" -a -z "$MYSQL_ALLOW_EMPTY_PASSWORD" -a -z "$MYSQL_RANDOM_ROOT_PASSWORD" ]; then
-			echo >&2 'error: database is uninitialized and password option is not specified '
-			echo >&2 '  You need to specify one of MYSQL_ROOT_PASSWORD, MYSQL_ALLOW_EMPTY_PASSWORD and MYSQL_RANDOM_ROOT_PASSWORD'
-			exit 1
+	chmod g+s /run/postgresql
+	chown -R postgres /run/postgresql
+
+	# look specifically for PG_VERSION, as it is expected in the DB dir
+	if [ ! -s "$PGDATA/PG_VERSION" ]; then
+		gosu postgres initdb
+
+		# check password first so we can output the warning before postgres
+		# messes it up
+		if [ "$POSTGRES_PASSWORD" ]; then
+			pass="PASSWORD '$POSTGRES_PASSWORD'"
+			authMethod=md5
+		else
+			# The - option suppresses leading tabs but *not* spaces. :)
+			cat >&2 <<-'EOWARN'
+				****************************************************
+				WARNING: No password has been set for the database.
+				         This will allow anyone with access to the
+				         Postgres port to access your database. In
+				         Docker's default configuration, this is
+				         effectively any other container on the same
+				         system.
+
+				         Use "-e POSTGRES_PASSWORD=password" to set
+				         it in "docker run".
+				****************************************************
+			EOWARN
+
+			pass=
+			authMethod=trust
 		fi
 
-		mkdir -p "$DATADIR"
-		chown -R mysql:mysql "$DATADIR"
+		{ echo; echo "host all all 0.0.0.0/0 $authMethod"; } >> "$PGDATA/pg_hba.conf"
 
-		echo 'Initializing database'
-		mysqld --initialize-insecure=on --datadir="$DATADIR"
-		echo 'Database initialized'
+		# internal start of server in order to allow set-up using psql-client
+		# does not listen on TCP/IP and waits until start finishes
+		gosu postgres pg_ctl -D "$PGDATA" \
+			-o "-c listen_addresses=''" \
+			-w start
 
-		"$@" --skip-networking &
-		pid="$!"
+		: ${POSTGRES_USER:=postgres}
+		: ${POSTGRES_DB:=$POSTGRES_USER}
+		export POSTGRES_USER POSTGRES_DB
 
-		mysql=( mysql --protocol=socket -uroot )
-
-		for i in {30..0}; do
-			if echo 'SELECT 1' | "${mysql[@]}" &> /dev/null; then
-				break
-			fi
-			echo 'MySQL init process in progress...'
-			sleep 1
-		done
-		if [ "$i" = 0 ]; then
-			echo >&2 'MySQL init process failed.'
-			exit 1
+		if [ "$POSTGRES_DB" != 'postgres' ]; then
+			psql --username postgres <<-EOSQL
+				CREATE DATABASE "$POSTGRES_DB" ;
+			EOSQL
+			echo
 		fi
 
-		if [ -z "$MYSQL_INITDB_SKIP_TZINFO" ]; then
-			# sed is for https://bugs.mysql.com/bug.php?id=20545
-			mysql_tzinfo_to_sql /usr/share/zoneinfo | sed 's/Local time zone must be set--see zic manual page/FCTY/' | "${mysql[@]}" mysql
+		if [ "$POSTGRES_USER" = 'postgres' ]; then
+			op='ALTER'
+		else
+			op='CREATE'
 		fi
 
-		
-		if [ ! -z "$MYSQL_RANDOM_ROOT_PASSWORD" ]; then
-			MYSQL_ROOT_PASSWORD="$(pwgen -1 32)"
-			echo "GENERATED ROOT PASSWORD: $MYSQL_ROOT_PASSWORD"
-		fi
-		"${mysql[@]}" <<-EOSQL
-			-- What's done in this file shouldn't be replicated
-			--  or products like mysql-fabric won't work
-			SET @@SESSION.SQL_LOG_BIN=0;
-
-			DELETE FROM mysql.user ;
-			CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
-			GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
-			DROP DATABASE IF EXISTS test ;
-			FLUSH PRIVILEGES ;
+		psql --username postgres <<-EOSQL
+			$op USER "$POSTGRES_USER" WITH SUPERUSER $pass ;
 		EOSQL
+		echo
 
-		if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
-			mysql+=( -p"${MYSQL_ROOT_PASSWORD}" )
-		fi
-
-		if [ "$MYSQL_DATABASE" ]; then
-			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` ;" | "${mysql[@]}"
-			mysql+=( "$MYSQL_DATABASE" )
-		fi
-
-		if [ "$MYSQL_USER" -a "$MYSQL_PASSWORD" ]; then
-			echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' ;" | "${mysql[@]}"
-
-			if [ "$MYSQL_DATABASE" ]; then
-				echo "GRANT ALL ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%' ;" | "${mysql[@]}"
-			fi
-
-			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
-		fi
 		echo
 		for f in /docker-entrypoint-initdb.d/*; do
 			case "$f" in
 				*.sh)  echo "$0: running $f"; . "$f" ;;
-				*.sql) echo "$0: running $f"; "${mysql[@]}" < "$f" && echo ;;
+				*.sql)
+					echo "$0: running $f";
+					psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" < "$f"
+					echo
+					;;
 				*)     echo "$0: ignoring $f" ;;
 			esac
 			echo
 		done
 
-		if [ ! -z "$MYSQL_ONETIME_PASSWORD" ]; then
-			"${mysql[@]}" <<-EOSQL
-				ALTER USER 'root'@'%' PASSWORD EXPIRE;
-			EOSQL
-		fi
-		if ! kill -s TERM "$pid" || ! wait "$pid"; then
-			echo >&2 'MySQL init process failed.'
-			exit 1
-		fi
+		gosu postgres pg_ctl -D "$PGDATA" -m fast -w stop
+		set_listen_addresses '*'
 
 		echo
-		echo 'MySQL init process done. Ready for start up.'
+		echo 'PostgreSQL init process complete; ready for start up.'
 		echo
 	fi
 
-	chown -R mysql:mysql "$DATADIR"
+	exec gosu postgres "$@"
 fi
 
 exec "$@"

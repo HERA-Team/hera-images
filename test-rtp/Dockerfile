@@ -6,7 +6,6 @@
 FROM hera-ssh-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
-COPY still.cfg.tmpl /hera/rtp/etc/
 COPY launch.sh /
 
 VOLUME /data

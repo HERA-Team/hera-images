@@ -11,9 +11,9 @@ FROM php:7.0-apache
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 COPY setup.sh hl_client.cfg php.ini insecure_* ssh_host_* /setup/
+RUN /bin/bash /setup/setup.sh
 COPY librarian /var/www/html/
 COPY launch.sh /
-RUN /bin/bash /setup/setup.sh
 
 EXPOSE 80
 CMD ["/launch.sh"]

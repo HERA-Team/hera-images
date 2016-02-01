@@ -6,16 +6,16 @@ set -e -x
 
 # Even though we're not doing anything real, still.py complains if we don't
 # have a full config file. We also don't use fill-still-config.sh since we're
-# too weird: we have $MYSQL_ROOT_PASSWORD not $HERA_DB_PASSWORD and the host
-# should be localhost.
+# too weird: we have $POSTGRES_PASSWORD not $HERA_DB_PASSWORD and the host
+# should be "".
 
 cat <<EOF >/hera/rtp/etc/still.cfg
 [dbinfo]
-dbuser = root
-dbpasswd = $MYSQL_ROOT_PASSWORD
-dbhost = localhost
-dbport = 3306
-dbtype = mysql
+dbuser = postgres
+dbpasswd = $POSTGRES_PASSWORD
+dbhost =
+dbport = 5432
+dbtype = postgresql
 dbname = hera_rtp
 
 [Still]
@@ -40,12 +40,6 @@ actions_endfile = FAKE
 args = [basename]
 EOF
 
-# For whatever reason, the SQLAlchemy binding expects the server socket to be
-# in /tmp rather than /var/run. And at this init stage the server doesn't seem
-# to be accepting network connections so that workaround doesn't work. So we
-# just do a symlink hack.
-
-mkdir -p /hera/rtp/log
-ln -s /var/run/mysqld/mysqld.sock /tmp/mysql.sock
+ln -s /var/run/postgresql/.s.PGSQL.5432 /tmp/
 /hera/rtp/bin/still.py --client --init
-rm -f /tmp/mysql.sock
+rm -f /tmp/.s.PGSQL.5432

@@ -2,47 +2,41 @@
 # Copyright 2016 the HERA Collaboration
 # Licensed under the MIT License.
 #
-# Based on the official Docker MySQL image, but we've added this setup script
+# Based on the official Docker Postgres image, but we've added this setup script
 # to significantly streamline the image generation. The init is split into two
 # pieces so that it's quick to rebuild when we're only changing the database
 # initialization.
 
-MYSQL_MAJOR=5.7
-MYSQL_VERSION=5.7.10-1debian7
-
 set -e -x
 
-groupadd -r mysql
-useradd -r -g mysql mysql
+groupadd -r postgres --gid=999
+useradd -r -g postgres --uid=999 postgres
+
+echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' $PG_MAJOR >/etc/apt/sources.list.d/pgdg.list
+apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+apt-get update
+
+# "grab gosu for easy step-down from root"
+gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+apt-get install -y --no-install-recommends ca-certificates wget
+wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.2/gosu-$(dpkg --print-architecture)"
+wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/1.2/gosu-$(dpkg --print-architecture).asc"
+gpg --verify /usr/local/bin/gosu.asc
+rm /usr/local/bin/gosu.asc
+chmod +x /usr/local/bin/gosu
+apt-get purge -y --auto-remove ca-certificates wget
+
+apt-get install -y locales
+localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
 mkdir /docker-entrypoint-initdb.d
 
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-  perl \
-  pwgen
-
-apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys A4A9406876FCBD3C456770C88C718D3B5072E1F5
-
-echo "deb http://repo.mysql.com/apt/debian/ wheezy mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
-{
-  echo mysql-community-server mysql-community-server/data-dir select '';
-  echo mysql-community-server mysql-community-server/root-pass password '';
-  echo mysql-community-server mysql-community-server/re-root-pass password '';
-  echo mysql-community-server mysql-community-server/remove-test-db select false;
-} | debconf-set-selections
-
-apt-get update
-
-DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-  mysql-community-server="${MYSQL_VERSION}"
+apt-get install -y postgresql-common
+sed -ri 's/#(create_main_cluster) .*$/\1 = false/' /etc/postgresql-common/createcluster.conf
+apt-get install -y postgresql-$PG_MAJOR=$PG_VERSION postgresql-contrib-$PG_MAJOR=$PG_VERSION
 
 rm -rf /var/lib/apt/lists/*
-rm -rf /var/lib/mysql
-mkdir -p /var/lib/mysql
 
-sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
-echo "skip-host-cache
-skip-name-resolve" | awk '{ print } $1 == "[mysqld]" && c == 0 { c = 1; system("cat") }' /etc/mysql/my.cnf >/tmp/my.cnf
-mv /tmp/my.cnf /etc/mysql/my.cnf
+mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
 
 # No self-destruct -- that's setup2.sh's job.

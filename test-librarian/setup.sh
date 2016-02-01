@@ -11,6 +11,7 @@ set -e -x
 
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+  libpq-dev \
   openssh-client \
   rsync \
   zip
@@ -48,7 +49,7 @@ done
 cp /setup/php.ini /usr/local/etc/php/
 
 docker-php-ext-install pcntl
-docker-php-ext-install mysqli
+docker-php-ext-install pgsql
 
 # Self-destruct!
 cd /

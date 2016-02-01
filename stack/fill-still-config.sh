@@ -12,11 +12,11 @@
 
 cat <<EOF >$(dirname $0)/rtp/etc/still.cfg
 [dbinfo]
-dbuser = root
+dbuser = postgres
 dbpasswd = $HERA_DB_PASSWORD
 dbhost = db
-dbport = 3306
-dbtype = mysql
+dbport = 5432
+dbtype = postgresql
 dbname = hera_rtp
 
 [Still]

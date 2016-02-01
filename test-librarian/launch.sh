@@ -18,7 +18,7 @@ set -e
 cat <<EOF >/var/www/html/hl_server.cfg
 { 
 "db_host": "db",
-"db_user": "root",
+"db_user": "postgres",
 "db_name": "hera_lib_$1",
 "db_passwd": "$HERA_DB_PASSWORD",
 "max_transfers": 10,

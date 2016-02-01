@@ -3,28 +3,29 @@
 #
 # Build by running "build.sh".
 #
-# I originally used the standard Docker mysql image, but to initialize the RTP
-# database we need to have access to the full HERA software stack. So now we
-# are FROM the hera-stack image, which is from Continuum's Miniconda, which is
-# FROM debian:wheezy. Below I have just copied the current (as of 2015/12/16,
-# commit ee6ac03) mysql Dockerfile bits. The Dockerfile for the official image
-# is based on debian:jessie, not wheezy, so I needed to change (1) the distro
-# name in the 'echo "deb..."' line, and (2) MYSQL_VERSION.
+# To initialize the RTP database we need to have access to the full HERA
+# software stack, so we can't just use a standard PostgreSQL image. I've copied
+# all of their stuff from github:docker-library:9737ce4.
 #
-# See https://github.com/docker-library/docs/tree/master/mysql for some docs
-# on how the base image works.
+# See https://hub.docker.com/_/postgres/ for information on on how the base
+# image works.
 
 FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
+
+ENV PG_MAJOR 9.5
+ENV PG_VERSION 9.5.0-1.pgdg70+2
+ENV LANG en_US.utf8
+ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
+ENV PGDATA /var/lib/postgresql/data
 
 COPY setup1.sh /setup/
 RUN /bin/bash /setup/setup1.sh
 COPY 00* setup2.sh /setup/
 RUN /bin/bash /setup/setup2.sh
 
-VOLUME /var/lib/mysql
-EXPOSE 3306
+EXPOSE 5432
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["mysqld"]
+CMD ["postgres"]
