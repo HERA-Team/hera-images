@@ -338,3 +338,7 @@ sudo docker exec onsitelibrarian /bin/bash -c \
 sudo docker stop onsitelibrarian offsitelibrarian offsitepot db
 sudo docker rm onsitelibrarian offsitelibrarian offsitepot db
 ```
+
+After running `copy_master`, you should be able to visit
+<http://localhost:21107/hl.php> and see that a batch of ten files has appeared
+in the records of the offsite Librarian instance.
