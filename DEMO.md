@@ -25,9 +25,9 @@ to build them yourself, but for a quick test you can fetch them off of the
 [Docker Hub]. This involves dowloading about 4 gigs of data. Run:
 
 ```
-sudo docker pull docker.io/pkgw/hera-test-db:20160128
-sudo docker pull docker.io/pkgw/hera-test-librarian:20160128
-sudo docker pull docker.io/pkgw/hera-test-rtp:20160128
+sudo docker pull docker.io/pkgw/hera-test-db:20160202
+sudo docker pull docker.io/pkgw/hera-test-librarian:20160202
+sudo docker pull docker.io/pkgw/hera-test-rtp:20160202
 ```
 
 [Docker Hub]: https://hub.docker.com/
@@ -35,9 +35,9 @@ sudo docker pull docker.io/pkgw/hera-test-rtp:20160128
 For convenience we also give them shorter aliases:
 
 ```
-sudo docker tag -f docker.io/pkgw/hera-test-db:20160128 hera-test-db:latest
-sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160128 hera-test-librarian:latest
-sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160128 hera-test-rtp:latest
+sudo docker tag -f docker.io/pkgw/hera-test-db:20160202 hera-test-db:latest
+sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160202 hera-test-librarian:latest
+sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160202 hera-test-rtp:latest
 ```
 
 You will also need a data workspace. Set a shell variable `$DATA` to the path
