@@ -14,7 +14,7 @@ FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 ENV PG_MAJOR 9.5
-ENV PG_VERSION 9.5.0-1.pgdg70+2
+ENV PG_VERSION 9.5.1-1.pgdg70+1
 ENV LANG en_US.utf8
 ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
 ENV PGDATA /var/lib/postgresql/data
