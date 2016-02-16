@@ -25,9 +25,9 @@ to build them yourself, but for a quick test you can fetch them off of the
 [Docker Hub]. This involves dowloading about 4 gigs of data. Run:
 
 ```
-sudo docker pull docker.io/pkgw/hera-test-db:20160202
-sudo docker pull docker.io/pkgw/hera-test-librarian:20160202
-sudo docker pull docker.io/pkgw/hera-test-rtp:20160202
+sudo docker pull docker.io/pkgw/hera-test-db:20160216
+sudo docker pull docker.io/pkgw/hera-test-librarian:20160216
+sudo docker pull docker.io/pkgw/hera-test-rtp:20160216
 ```
 
 [Docker Hub]: https://hub.docker.com/
@@ -35,9 +35,9 @@ sudo docker pull docker.io/pkgw/hera-test-rtp:20160202
 For convenience we also give them shorter aliases:
 
 ```
-sudo docker tag -f docker.io/pkgw/hera-test-db:20160202 hera-test-db:latest
-sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160202 hera-test-librarian:latest
-sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160202 hera-test-rtp:latest
+sudo docker tag -f docker.io/pkgw/hera-test-db:20160216 hera-test-db:latest
+sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160216 hera-test-librarian:latest
+sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160216 hera-test-rtp:latest
 ```
 
 You will also need a data workspace. Set a shell variable `$DATA` to the path
@@ -297,6 +297,10 @@ Demo: file transfer offsite between Librarians
 
 The librarian containers don't run `sshd`, so we can’t `rsync` to them
 directly — to test out the syncing we need to create an offsite pot.
+
+**NOTE**: the copy commands below will cause errors since there are bugs that
+need to be fixed
+([github issue](https://github.com/HERA-Team/librarian/issues/2)).
 
 ```
 sudo docker run -d --net hera --name db -h db \

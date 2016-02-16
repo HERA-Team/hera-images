@@ -6,7 +6,7 @@
 # This builds a reasonable base image with an Anaconda Python installation
 # (well, Miniconda) and the standard HERA software stack.
 
-FROM continuumio/miniconda:3.18.3p0
+FROM continuumio/miniconda:3.19.0
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
@@ -36,6 +36,8 @@ RUN cd /hera/aipy && \
       python ./setup.py install && \
     cd /hera/capo && \
       (cd Compress/ddr_compress && python setup.py install) && \
+      python ./setup.py install && \
+    cd /hera/librarian && \
       python ./setup.py install && \
     cd /hera/rtp && \
       mkdir -p log etc && \
