@@ -26,7 +26,10 @@ EOF
 
 /hera/fill-still-config.sh
 
-# Meh, just run this in the background.
-/usr/sbin/sshd -D &
+# We don't actually use rsync in daemon mode, so all we need to do is run
+# sshd. In face, you could achieve the same effect with the current
+# hera-ssh-stack image. But it seems better to keep this one distinct in case
+# we elaborate things in the future.
+###exec /usr/bin/rsync --no-detach --daemon --config /etc/rsyncd.conf "$@"
 
-exec /usr/bin/rsync --no-detach --daemon --config /etc/rsyncd.conf "$@"
+exec /usr/sbin/sshd -D
