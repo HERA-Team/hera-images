@@ -1,0 +1,102 @@
+# Copyright 2016 the HERA collaboration.
+# Licensed under the BSD License.
+# This file requires Docker >= v1.10 and docker-compose >= v1.6.
+version: "2"
+
+services:
+  db:
+    image: hera-test-db
+    hostname: db
+    environment:
+      POSTGRES_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    expose:
+      - "5432"
+
+  onsitelibrarian:
+    image: hera-test-librarian
+    hostname: onsitelibrarian
+    command: /launch.sh onsite
+    depends_on:
+      - db
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    ports:
+      - "21106:80"
+    volumes:
+      - ./onsitelibrarian:/data
+
+  onsitepot:
+    image: hera-rsync-pot
+    hostname: onsitepot
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    volumes:
+      - ./onsitepot:/data
+
+  offsitelibrarian:
+    image: hera-test-librarian
+    hostname: offsitelibrarian
+    command: /launch.sh offsite
+    depends_on:
+      - db
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    ports:
+      - "21107:80"
+    volumes:
+      - ./offsitelibrarian:/data
+
+  offsitepot:
+    image: hera-rsync-pot
+    hostname: offsitepot
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    volumes:
+      - ./offsitepot:/data
+
+  rtpclient:
+    image: hera-test-rtp
+    hostname: rtpclient
+    command: /launch.sh --client
+    depends_on:
+      - db
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    volumes:
+      - ./rtpclient:/data
+
+  # With a bit of work we should be able to use "docker-compose scale" to
+  # create a bunch of RTP servers, but we can't do it yet. If we don't specify
+  # a hostname specifically, the rtpclient can't look up the servers on the
+  # network; but if we do, everything gets the same hostname when scaled out.
+  # They also all share the same volume, so you'd have to add some code to
+  # uniquify by hostname or something.
+  
+  rtpserver:
+    image: hera-test-rtp
+    hostname: rtpserver
+    command: /launch.sh --server
+    depends_on:
+      - db
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    volumes:
+      - ./rtpserver:/data
+
+networks:
+  hera:
+    driver: bridge
