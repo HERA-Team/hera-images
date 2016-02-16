@@ -1,4 +1,4 @@
-# Copyright 2015 the HERA Collaboration
+# Copyright 2015-2016 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Build by running "build.sh"; see ../README.md for more information.
@@ -19,7 +19,7 @@ RUN apt-get update && \
 RUN mkdir -p /data
 RUN chmod a+rw /data
 
-ADD entrypoint.sh /entrypoint.sh
+COPY launch.sh /
 
 EXPOSE 873
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/launch.sh"]
