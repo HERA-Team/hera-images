@@ -26,25 +26,18 @@ probably need them.
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having
 to build them yourself, but for a quick test you can fetch them off of the
-[Docker Hub]. This involves dowloading about 4 gigs of data. Run:
+[Docker Hub]. This involves dowloading about 4 gigs of data. In the directory
+containing this file, run:
 
 ```
-docker pull docker.io/pkgw/hera-test-db:20160216
-docker pull docker.io/pkgw/hera-test-librarian:20160216
-docker pull docker.io/pkgw/hera-test-rtp:20160216
-docker pull docker.io/pkgw/hera-rsync-pot:20160216
+./pull.sh -t 20160216
 ```
 
 [Docker Hub]: https://hub.docker.com/
 
-For convenience we also give them shorter aliases:
-
-```
-docker tag -f docker.io/pkgw/hera-test-db:20160216 hera-test-db:latest
-docker tag -f docker.io/pkgw/hera-test-librarian:20160216 hera-test-librarian:latest
-docker tag -f docker.io/pkgw/hera-test-rtp:20160216 hera-test-rtp:latest
-docker tag -f docker.io/pkgw/hera-rsync-pot:20160216 hera-rsync-pot:latest
-```
+This will download the needed images and give them useful short aliases — the
+`docker pull` and `docker tag` lines printed by the script show what it’s
+doing.
 
 You also need to download some raw HERA data. I use a copy of the files in
 `/data/pot0/zen.*.uv` on the `pot0` machine inside the Berkeley `digilab` test
