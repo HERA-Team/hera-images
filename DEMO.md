@@ -26,25 +26,18 @@ probably need them.
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having
 to build them yourself, but for a quick test you can fetch them off of the
-[Docker Hub]. This involves dowloading about 4 gigs of data. Run:
+[Docker Hub]. This involves dowloading about 4 gigs of data. In the directory
+containing this file, run:
 
 ```
-docker pull docker.io/pkgw/hera-test-db:20160216
-docker pull docker.io/pkgw/hera-test-librarian:20160216
-docker pull docker.io/pkgw/hera-test-rtp:20160216
-docker pull docker.io/pkgw/hera-rsync-pot:20160216
+./pull.sh -t 20160216
 ```
 
 [Docker Hub]: https://hub.docker.com/
 
-For convenience we also give them shorter aliases:
-
-```
-docker tag -f docker.io/pkgw/hera-test-db:20160216 hera-test-db:latest
-docker tag -f docker.io/pkgw/hera-test-librarian:20160216 hera-test-librarian:latest
-docker tag -f docker.io/pkgw/hera-test-rtp:20160216 hera-test-rtp:latest
-docker tag -f docker.io/pkgw/hera-rsync-pot:20160216 hera-rsync-pot:latest
-```
+This will download the needed images and give them useful short aliases — the
+`docker pull` and `docker tag` lines printed by the script show what it’s
+doing.
 
 You also need to download some raw HERA data. I use a copy of the files in
 `/data/pot0/zen.*.uv` on the `pot0` machine inside the Berkeley `digilab` test
@@ -93,7 +86,7 @@ tell the Librarian about them. This command registers them:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv*"
 ```
 
 The default configuration provides web access to the Librarian over the port
@@ -110,14 +103,14 @@ notify it about data:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
+  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv*"
 ```
 
 To trigger processing, we need to flag the data as ready for processing:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv*"
 ```
 
 Things should now start crunching inside the `rig_rtpclient_1` and
@@ -314,7 +307,7 @@ using a temporary client image that has access to the full software stack:
 docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv*"
 ```
 
 Now is a good time to visit <http://localhost:21106/hl.php> (with `9876543211`
@@ -359,7 +352,7 @@ inserted into the database; we can do this with the `docker exec` command.
 ```
 docker exec rtpclient /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
-  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv*"
 ```
 
 If all is well this should set your RTP servers off to crunch the data, which
@@ -410,7 +403,7 @@ docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   hera-test-librarian /launch.sh onsite
 
 docker exec onsitepot /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv*"
 
 mkdir -p $DATA/rtpserver0
 
@@ -426,7 +419,7 @@ docker run -d --net hera --name rtpclient -h rtpclient \
 
 docker exec onsitepot /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
-  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv*"
 
 # RTP crunching happens here
 
@@ -474,7 +467,7 @@ docker run -d --net hera --name offsitelibrarian -h offsitelibrarian \
 docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv*"
 
 docker exec onsitelibrarian /bin/bash -c \
   "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
