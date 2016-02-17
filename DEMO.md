@@ -20,16 +20,19 @@ leads on a non-HERA-specific problem,
 **The HERA test setup requires Docker version 1.10 or newer.** (Well, the
 older instructions work with 1.9.)
 
+I’ve written the commands below without a `sudo` prefix. On Linux, you
+probably need them.
+
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having
 to build them yourself, but for a quick test you can fetch them off of the
 [Docker Hub]. This involves dowloading about 4 gigs of data. Run:
 
 ```
-sudo docker pull docker.io/pkgw/hera-test-db:20160216
-sudo docker pull docker.io/pkgw/hera-test-librarian:20160216
-sudo docker pull docker.io/pkgw/hera-test-rtp:20160216
-sudo docker pull docker.io/pkgw/hera-rsync-pot:20160216
+docker pull docker.io/pkgw/hera-test-db:20160216
+docker pull docker.io/pkgw/hera-test-librarian:20160216
+docker pull docker.io/pkgw/hera-test-rtp:20160216
+docker pull docker.io/pkgw/hera-rsync-pot:20160216
 ```
 
 [Docker Hub]: https://hub.docker.com/
@@ -37,10 +40,10 @@ sudo docker pull docker.io/pkgw/hera-rsync-pot:20160216
 For convenience we also give them shorter aliases:
 
 ```
-sudo docker tag -f docker.io/pkgw/hera-test-db:20160216 hera-test-db:latest
-sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160216 hera-test-librarian:latest
-sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160216 hera-test-rtp:latest
-sudo docker tag -f docker.io/pkgw/hera-rsync-pot:20160216 hera-rsync-pot:latest
+docker tag -f docker.io/pkgw/hera-test-db:20160216 hera-test-db:latest
+docker tag -f docker.io/pkgw/hera-test-librarian:20160216 hera-test-librarian:latest
+docker tag -f docker.io/pkgw/hera-test-rtp:20160216 hera-test-rtp:latest
+docker tag -f docker.io/pkgw/hera-rsync-pot:20160216 hera-rsync-pot:latest
 ```
 
 You also need to download some raw HERA data. I use a copy of the files in
@@ -87,7 +90,7 @@ Let’s say that some new data have been created on a pot and that we want to
 tell the Librarian about them. This command registers them:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c \
+docker exec rig_onsitepot_1 /bin/bash -c \
   "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
 ```
 
@@ -104,14 +107,14 @@ now, RTP and the Librarian don’t talk to each other, so we need to manually
 notify it about data:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c \
+docker exec rig_onsitepot_1 /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
 ```
 
 To trigger processing, we need to flag the data as ready for processing:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c \
+docker exec rig_onsitepot_1 /bin/bash -c \
   "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 ```
 
@@ -120,8 +123,8 @@ Things should now start crunching inside the `rig_rtpclient_1` and
 from these containers, which should show the processing steps running:
 
 ```
-sudo docker logs rig_rtpclient_1
-sudo docker logs rig_rtpserver_1
+docker logs rig_rtpclient_1
+docker logs rig_rtpserver_1
 ```
 
 Files will appear in the `rig` subdirectories `rtpclient`, `rtpserver`, and so
@@ -135,7 +138,7 @@ them to a different “offsite” librarian. As with the first example, you have
 to tell the Librarian about your data **if you haven’t already done so**:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c \
+docker exec rig_onsitepot_1 /bin/bash -c \
   "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
 ```
 
@@ -143,7 +146,7 @@ Now we tell the librarian that we want to copy all of the data to the
 `offsitepot` in `offsite` system:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c \
+docker exec rig_onsitepot_1 /bin/bash -c \
   "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
 ```
 
@@ -151,7 +154,7 @@ To actually execute the copies, we have to run the `copy_master` program on
 the onsite librarian:
 
 ```
-sudo docker exec rig_onsitelibrarian_1 /bin/bash -c \
+docker exec rig_onsitelibrarian_1 /bin/bash -c \
   "/var/www/html/copy_master"
 ```
 
@@ -223,7 +226,7 @@ other’s host names, we need to create a special virtual “network” in Docke
 that they can all share:
 
 ```
-sudo docker network create -d bridge hera
+docker network create -d bridge hera
 ```
 
 You only need to run this command the first time you try any of this stuff out.
@@ -245,7 +248,7 @@ container named `db` that will run the `hera-test-db` image — we are
 essentially starting up a little encapsulated database server:
 
 ```
-sudo docker run -d --net hera --name db -h db \
+docker run -d --net hera --name db -h db \
   -e POSTGRES_PASSWORD=$DB_PASSWORD \
   hera-test-db
 ```
@@ -268,13 +271,13 @@ If you ever want to examine the database directly, you can do so by running
 the Postgres command-line client in a temporary container on the same network:
 
 ```
-sudo docker run -it --net hera --rm hera-test-db psql -hdb -Upostgres
+docker run -it --net hera --rm hera-test-db psql -hdb -Upostgres
 ```
 
 And if you want to see the logs from the Postgres server, run:
 
 ```
-sudo docker logs db
+docker logs db
 ```
 
 Now we can start a Librarian container. We’re going to imagine that this
@@ -285,7 +288,7 @@ data.
 mkdir -p $DATA/onsitelibrarian/
 cp -a $DATA/raw/* $DATA/onsitelibrarian/
 
-sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
+docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/onsitelibrarian:/data \
   -p 21106:80 \
@@ -306,7 +309,7 @@ Now we tell the Librarian about the raw data. The easiest way to do this is by
 using a temporary client image that has access to the full software stack:
 
 ```
-sudo docker run --rm --net hera \
+docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
   "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
@@ -322,13 +325,13 @@ subdirectories in `$DATA` for repeatability:
 ```
 mkdir -p $DATA/rtpserver0 $DATA/rtpserver1
 
-sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
+docker run -d --net hera --name rtpserver0 -h rtpserver0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver0:/data \
   -p 14204:14204 \
   hera-test-rtp /launch.sh --server
 
-sudo docker run -d --net hera --name rtpserver1 -h rtpserver1 \
+docker run -d --net hera --name rtpserver1 -h rtpserver1 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver1:/data \
   -p 14205:14204 \
@@ -339,7 +342,7 @@ And an RTP client that will tell the servers what to do. For simplicity we also 
 host the raw data by aliasing it to the Librarian’s data directory:
 
 ```
-sudo docker run -d --net hera --name rtpclient -h rtpclient \
+docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/onsitelibrarian:/data \
   hera-test-rtp /launch.sh --client
@@ -352,7 +355,7 @@ get RTP and the Librarian talking to each other!* We need to run this command
 inserted into the database; we can do this with the `docker exec` command.
 
 ```
-sudo docker exec rtpclient /bin/bash -c \
+docker exec rtpclient /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
   /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 ```
@@ -362,7 +365,7 @@ should start appearing in `$DATA/rtpserver*`. You can monitor progress with
 commands like:
 
 ```
-sudo docker logs -f rtpclient
+docker logs -f rtpclient
 ```
 
 while will follow the log output of the client (hit control-C to quit showing
@@ -371,8 +374,8 @@ the logs; this won’t disturb the container).
 Finally, to clean up:
 
 ```
-sudo docker stop rtpclient rtpserver0 rtpserver1 onsitelibrarian db
-sudo docker rm rtpclient rtpserver0 rtpserver1 onsitelibrarian db
+docker stop rtpclient rtpserver0 rtpserver1 onsitelibrarian db
+docker rm rtpclient rtpserver0 rtpserver1 onsitelibrarian db
 ```
 
 
@@ -386,47 +389,47 @@ run a `docker pull` command as at the top of this file but specifying the
 `hera-rsync-pot` repository.
 
 ```
-sudo docker run -d --net hera --name db -h db \
+docker run -d --net hera --name db -h db \
   -e POSTGRES_PASSWORD=$DB_PASSWORD \
   hera-test-db
 
 mkdir -p $DATA/onsitepot/
 cp -a $DATA/raw/* $DATA/onsitepot/
 
-sudo docker run -d --net hera --name onsitepot -h onsitepot \
+docker run -d --net hera --name onsitepot -h onsitepot \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/onsitepot:/data \
   hera-rsync-pot
 
-sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
+docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/onsitelibrarian:/data \
   -p 21106:80 \
   hera-test-librarian /launch.sh onsite
 
-sudo docker exec onsitepot /bin/bash -c \
+docker exec onsitepot /bin/bash -c \
   "/hera/librarian/add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv"
 
 mkdir -p $DATA/rtpserver0
 
-sudo docker run -d --net hera --name rtpserver0 -h rtpserver0 \
+docker run -d --net hera --name rtpserver0 -h rtpserver0 \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/rtpserver0:/data \
   hera-test-rtp /launch.sh --server
 
-sudo docker run -d --net hera --name rtpclient -h rtpclient \
+docker run -d --net hera --name rtpclient -h rtpclient \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/raw:/data \
   hera-test-rtp /launch.sh --client
 
-sudo docker exec onsitepot /bin/bash -c \
+docker exec onsitepot /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
   /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 
 # RTP crunching happens here
 
-sudo docker stop rtpclient rtpserver0 onsitelibrarian onsitepot db
-sudo docker rm rtpclient rtpserver0 onsitelibrarian onsitepot db
+docker stop rtpclient rtpserver0 onsitelibrarian onsitepot db
+docker rm rtpclient rtpserver0 onsitelibrarian onsitepot db
 ```
 
 
@@ -441,14 +444,14 @@ need to be fixed
 ([github issue](https://github.com/HERA-Team/librarian/issues/2)).
 
 ```
-sudo docker run -d --net hera --name db -h db \
+docker run -d --net hera --name db -h db \
   -e POSTGRES_PASSWORD=$DB_PASSWORD \
   hera-test-db
 
 mkdir -p $DATA/onsitelibrarian/
 cp -a $DATA/raw/* $DATA/onsitelibrarian/
 
-sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
+docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/onsitelibrarian:/data \
   -p 21106:80 \
@@ -456,29 +459,29 @@ sudo docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
 
 mkdir -p $DATA/offsitepot/
 
-sudo docker run -d --net hera --name offsitepot -h offsitepot \
+docker run -d --net hera --name offsitepot -h offsitepot \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -v $DATA/offsitepot:/data \
   hera-rsync-pot
 
-sudo docker run -d --net hera --name offsitelibrarian -h offsitelibrarian \
+docker run -d --net hera --name offsitelibrarian -h offsitelibrarian \
   -e HERA_DB_PASSWORD=$DB_PASSWORD \
   -p 21107:80 \
   hera-test-librarian /launch.sh offsite
 
-sudo docker run --rm --net hera \
+docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
   "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
 
-sudo docker exec onsitelibrarian /bin/bash -c \
+docker exec onsitelibrarian /bin/bash -c \
   "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
 
-sudo docker exec onsitelibrarian /bin/bash -c \
+docker exec onsitelibrarian /bin/bash -c \
   "/var/www/html/copy_master"
 
-sudo docker stop onsitelibrarian offsitelibrarian offsitepot db
-sudo docker rm onsitelibrarian offsitelibrarian offsitepot db
+docker stop onsitelibrarian offsitelibrarian offsitepot db
+docker rm onsitelibrarian offsitelibrarian offsitepot db
 ```
 
 After running `copy_master`, you should be able to visit
