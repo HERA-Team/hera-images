@@ -72,7 +72,7 @@ final directory structure should look like `onsitepot/24.../zen.*.uv`.
 To start up the servers on OS X:
 
 ```
-DB_PASSWORD=1234 docker-compose up -d
+export DB_PASSWORD=1234 docker-compose up -d
 ```
 
 This should say that it created and started a bunch of stuff. On Linux, the
