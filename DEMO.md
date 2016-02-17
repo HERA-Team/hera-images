@@ -17,7 +17,8 @@ First, I am assuming some broad familiarity with [Docker] here. Fortunately,
 Docker is so hot right now, so if you need a more general introduction or
 leads on a non-HERA-specific problem,
 [we can help you with that](https://www.google.com/search?q=docker%20tutorial).
-**The HERA test setup requires Docker version 1.9 or newer.**
+**The HERA test setup requires Docker version 1.10 or newer.** (Well, the
+older instructions work with 1.9.)
 
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having
@@ -28,6 +29,7 @@ to build them yourself, but for a quick test you can fetch them off of the
 sudo docker pull docker.io/pkgw/hera-test-db:20160216
 sudo docker pull docker.io/pkgw/hera-test-librarian:20160216
 sudo docker pull docker.io/pkgw/hera-test-rtp:20160216
+sudo docker pull docker.io/pkgw/hera-rsync-pot:20160216
 ```
 
 [Docker Hub]: https://hub.docker.com/
@@ -38,7 +40,67 @@ For convenience we also give them shorter aliases:
 sudo docker tag -f docker.io/pkgw/hera-test-db:20160216 hera-test-db:latest
 sudo docker tag -f docker.io/pkgw/hera-test-librarian:20160216 hera-test-librarian:latest
 sudo docker tag -f docker.io/pkgw/hera-test-rtp:20160216 hera-test-rtp:latest
+sudo docker tag -f docker.io/pkgw/hera-rsync-pot:20160216 hera-rsync-pot:latest
 ```
+
+You also need to download some raw HERA data. I use a copy of the files in
+`/data/pot0/zen.*.uv` on the `pot0` machine inside the Berkeley `digilab` test
+setup — the JDs range from 2456892.20012 to 2456892.70844, and the total size
+is about 0.5 GB. (By the way, with modern versions of SSH there are awesome
+ways to make it so that you can `scp` files from `pot0` directly to your local
+machine — ask Peter for the info.) **However**, the directory structure should
+go `<datadir>/<integer JD>/zen.*.uv`, so if you copy the digilab `pot0` files
+you need to put them inside a subdirectory named `2456892` in `raw`. There are
+also data in `/data4/paper/HERA2015/2457*/` on `folio` at UPenn, but those are
+the `.uvA` files so some of the commands below would need changing.
+
+Starting everything up
+----------------------
+
+Once you’ve pulled all of the the images and some example data, we can spin up
+a self-contained test network.
+
+First, change to the `rig` directory within a checkout of this `hera-images`
+repository.
+
+Create a directory called `onsitepot` and copy your demo data into it. The
+final directory structure should look like `onsitepot/24.../zen.*.uv`.
+
+To start up the servers on OS X:
+
+```
+DB_PASSWORD=1234 docker-compose up -d
+```
+
+This should say that it created and started a bunch of stuff. On Linux, the
+needed command is probably:
+
+```
+sudo DB_PASSWORD=1234 /full/path/to/docker-compose -d
+```
+
+We can now simulate various processes in the test rig.
+
+### Registering data with the librarian and viewing the results
+
+Let’s say that some new data have been created on a pot and that we want to
+tell the Librarian about them. This command registers them:
+
+```
+sudo docker exec rig_onsitepot_1 bash -c "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+```
+
+The default configuration provides web access to the Librarian over the port
+21106, so you should be able to visit <http://localhost:21106/hl.php> with
+`9876543210` as an authenticator and see the web interface. On OS X machines,
+you need to replace `localhost` with a particular IP address
+[as per this webpage](http://www.markhneedham.com/blog/2015/11/08/docker-1-9-port-forwarding-on-mac-os-x/).
+
+
+---
+
+Older, harder instructions compatible with Docker 1.9
+=====================================================
 
 You will also need a data workspace. Set a shell variable `$DATA` to the path
 of some directory where you can fool around and write a few gigs of data. Of
