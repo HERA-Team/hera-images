@@ -21,7 +21,7 @@ ENV PGDATA /var/lib/postgresql/data
 
 COPY setup1.sh /setup/
 RUN /bin/bash /setup/setup1.sh
-COPY 00* setup2.sh /setup/
+COPY 0* setup2.sh /setup/
 RUN /bin/bash /setup/setup2.sh
 
 EXPOSE 5432

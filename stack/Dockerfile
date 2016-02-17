@@ -16,6 +16,7 @@ RUN apt-get update && \
   mkdir -p /hera
 
 RUN conda install -y \
+    astropy \
     basemap \
     ephem \
     matplotlib \
