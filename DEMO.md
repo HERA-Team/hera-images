@@ -86,7 +86,7 @@ tell the Librarian about them. This command registers them:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv*"
 ```
 
 The default configuration provides web access to the Librarian over the port
@@ -103,14 +103,14 @@ notify it about data:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
+  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv*"
 ```
 
 To trigger processing, we need to flag the data as ready for processing:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv*"
 ```
 
 Things should now start crunching inside the `rig_rtpclient_1` and
@@ -307,7 +307,7 @@ using a temporary client image that has access to the full software stack:
 docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv*"
 ```
 
 Now is a good time to visit <http://localhost:21106/hl.php> (with `9876543211`
@@ -352,7 +352,7 @@ inserted into the database; we can do this with the `docker exec` command.
 ```
 docker exec rtpclient /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
-  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv*"
 ```
 
 If all is well this should set your RTP servers off to crunch the data, which
@@ -403,7 +403,7 @@ docker run -d --net hera --name onsitelibrarian -h onsitelibrarian \
   hera-test-librarian /launch.sh onsite
 
 docker exec onsitepot /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv*"
 
 mkdir -p $DATA/rtpserver0
 
@@ -419,7 +419,7 @@ docker run -d --net hera --name rtpclient -h rtpclient \
 
 docker exec onsitepot /bin/bash -c \
   "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv &&
-  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+  /hera/rtp/bin/reset_observations.py --file /data/*/*.uv*"
 
 # RTP crunching happens here
 
@@ -467,7 +467,7 @@ docker run -d --net hera --name offsitelibrarian -h offsitelibrarian \
 docker run --rm --net hera \
   -v $DATA/onsitelibrarian:/data \
   hera-test-db /bin/bash -c \
-  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv"
+  "/hera/librarian/add_obs_librarian.py --site onsite --store onsitelibrarian /data/*/*.uv*"
 
 docker exec onsitelibrarian /bin/bash -c \
   "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
