@@ -6,8 +6,15 @@
 
 : ${HUBUSER:=pkgw}
 : ${IMAGES:=hera-rsync-pot hera-test-db hera-test-librarian hera-test-rtp}
-: ${DOCKER:=sudo docker}
 : ${TAGARGS:=}
+
+if [ -z "$DOCKER" ] ; then
+   if [ $(uname -s) = Linux ] ; then
+       DOCKER="sudo docker"
+   else
+       DOCKER="docker"
+   fi
+fi
 
 set -e
 

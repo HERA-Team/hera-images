@@ -96,7 +96,7 @@ is <https://hub.docker.com/r/pkgw/>.
 1. Create repositories for the images you want to host on your account. The
 push step will get pretty far before erroring out if you don’t!
 1. Once an image has been built locally, “tag” it to indicate that it should
-also be associated with an online registry: e.g. `sudo docker tag
+also be associated with an online registry: e.g. `docker tag
 hera-stack docker.io/pkgw/hera-stack:20160127`.
 1. Then “push” it to the repo.
 
@@ -106,10 +106,10 @@ Overall, the usual pattern will be:
 date=$(date +%Y%m%d)
 user=pkgw
 base=hera-stack
-sudo docker tag $base:$date docker.io/$user/$base:$date
-sudo docker tag -f $base:$date docker.io/$user/$base:latest
-sudo docker push docker.io/$user/$base:$date
-sudo docker push docker.io/$user/$base:latest
+docker tag $base:$date docker.io/$user/$base:$date
+docker tag -f $base:$date docker.io/$user/$base:latest
+docker push docker.io/$user/$base:$date
+docker push docker.io/$user/$base:latest
 ```
 
 This is automated in the [publish.sh](publish.sh) shell script.

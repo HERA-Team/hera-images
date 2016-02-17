@@ -20,7 +20,13 @@ fi
 
 imagename=hera-ssh-stack:$(date +%Y%m%d)
 
-: ${DOCKER:=sudo docker} # i.e., default $DOCKER to 'sudo docker' if unset
+if [ -z "$DOCKER" ] ; then
+   if [ $(uname -s) = Linux ] ; then
+       DOCKER="sudo docker"
+   else
+       DOCKER="docker"
+   fi
+fi
 
 # Set up files and build.
 
