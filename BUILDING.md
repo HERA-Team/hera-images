@@ -48,7 +48,8 @@ as follows. First:
 ./stack/build.sh ~/code/{aipy,omnical,capo,librarian,RTP,Monitor_and_Control}
 ```
 
-... using some helpful `bash` expansion tricks.
+… using some helpful `bash` expansion tricks, if you put the checkouts in
+`~/code/`.
 
 Here, each bracketed term should be the path to the corresponding Git
 checkout. You can also provide a URL that allows you to define the input
