@@ -2,13 +2,23 @@
 # Copyright 2016 the HERA Collaboration.
 # Licensed under the MIT License.
 #
-# Containers should run this on startup to set up the still.cfg needed to
-# perform actions relating to the real time pipe. See the files in
-# still_workflow:etc/*.cfg for descriptions of the parameters.
+# Containers should run this on startup to set up the configuration files
+# needed to access the database, since the database password is an
+# environment variable.
 #
-# Right now all we do is fill in the DB password from the environment. I know
-# that more modern Docker setups discourage this approach; I don't know what
-# the encouraged method is now, though.
+# As part of this we setup the still.cfg needed to perform actions relating to
+# the real time pipe. See the files in still_workflow:etc/*.cfg for
+# descriptions of the parameters.
+
+mkdir -p /.hera_mc /root/.hera_mc
+cat <<EOF >/.hera_mc/mc_config.json
+{
+  "location": "karoo",
+  "mc_db": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_mc",
+  "test_db": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_mc_test"
+}
+EOF
+cp /.hera_mc/mc_config.json /root/.hera_mc/
 
 cat <<EOF >$(dirname $0)/rtp/etc/still.cfg
 [dbinfo]
