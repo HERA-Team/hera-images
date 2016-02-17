@@ -87,7 +87,8 @@ Let’s say that some new data have been created on a pot and that we want to
 tell the Librarian about them. This command registers them:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+sudo docker exec rig_onsitepot_1 /bin/bash -c \
+  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
 ```
 
 The default configuration provides web access to the Librarian over the port
@@ -98,17 +99,20 @@ you need to replace `localhost` with a particular IP address
 
 ### Registering data with the RTP system and processing everything
 
-Let’s say that we want to push some data through the real timep processor. For
-now, RTP and the Librarian don’t talk to each other, so we need to manually notify it about data:
+Let’s say that we want to push some data through the real time processor. For
+now, RTP and the Librarian don’t talk to each other, so we need to manually
+notify it about data:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
+sudo docker exec rig_onsitepot_1 /bin/bash -c \
+  "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
 ```
 
 To trigger processing, we need to flag the data as ready for processing:
 
 ```
-sudo docker exec rig_onsitepot_1 /bin/bash -c "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+sudo docker exec rig_onsitepot_1 /bin/bash -c \
+  "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
 ```
 
 Things should now start crunching inside the `rig_rtpclient_1` and
@@ -123,6 +127,39 @@ sudo docker logs rig_rtpserver_1
 Files will appear in the `rig` subdirectories `rtpclient`, `rtpserver`, and so
 on. When datasets are fully processed, the processed data will appear back in
 the `onsitepot` directory.
+
+### Copying data from one librarian to another
+
+Let’s say that we have some data on the “onsite” librarian and we want to copy
+them to a different “offsite” librarian. As with the first example, you have
+to tell the Librarian about your data **if you haven’t already done so**:
+
+```
+sudo docker exec rig_onsitepot_1 /bin/bash -c \
+  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+```
+
+Now we tell the librarian that we want to copy all of the data to the
+`offsitepot` in `offsite` system:
+
+```
+sudo docker exec rig_onsitepot_1 /bin/bash -c \
+  "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
+```
+
+To actually execute the copies, we have to run the `copy_master` program on
+the onsite librarian:
+
+```
+sudo docker exec rig_onsitelibrarian_1 /bin/bash -c \
+  "/var/www/html/copy_master"
+```
+
+This will only run ten copies by default. They will appear to succeed but due
+to some database bugs there are actually errors, which you will see if you
+visit <http://localhost:21106/hl.php?action=tasks> (again, replacing
+`localhost` with an IP address if you’re on OS X).
+
 
 ### Cleaning up
 
