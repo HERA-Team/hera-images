@@ -27,7 +27,7 @@ imagename=hera-rsync-pot:$(date +%Y%m%d)
 # Set up files and build.
 
 set -e
-work=$(mktemp -d)
+work=$(mktemp -d ${TMPDIR:-/tmp}/heraimage.XXXXXX)
 echo "Temporary work directory is $work ."
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
