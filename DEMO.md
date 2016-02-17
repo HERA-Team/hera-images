@@ -97,6 +97,18 @@ you need to replace `localhost` with a particular IP address
 [as per this webpage](http://www.markhneedham.com/blog/2015/11/08/docker-1-9-port-forwarding-on-mac-os-x/).
 
 
+### Cleaning up
+
+Shutting down the test network is straightforward:
+
+```
+docker-compose down
+```
+
+This both stops *and deletes* your containers, so it blows away any setup that
+you’ve done. It doesn’t delete the data directories creatd below `rig/`.
+
+
 ---
 
 Older, harder instructions compatible with Docker 1.9
