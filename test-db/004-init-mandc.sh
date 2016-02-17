@@ -2,7 +2,7 @@
 # Copyright 2016 the HERA Collaboration
 # Licensed under the BSD License.
 
-exec python <<'EOF'
+python <<'EOF'
 import os
 from hera_mc import mc
 
