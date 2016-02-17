@@ -42,6 +42,14 @@ as follows. First:
 ./stack/build.sh <aipy> <omnical> <capo> <librarian> <rtp> <m&c>
 ```
 
+**For example**, you might write:
+
+```
+./stack/build.sh ~/code/{aipy,omnical,capo,librarian,RTP,Monitor_and_Control}
+```
+
+... using some helpful `bash` expansion tricks.
+
 Here, each bracketed term should be the path to the corresponding Git
 checkout. You can also provide a URL that allows you to define the input
 software more reproducibly and/or avoid needing a local checkout of the
