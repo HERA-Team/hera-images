@@ -7,3 +7,4 @@
 
 create database hera_rtp;
 create database hera_mc;
+create database hera_mc_test;
