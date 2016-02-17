@@ -87,7 +87,7 @@ Let’s say that some new data have been created on a pot and that we want to
 tell the Librarian about them. This command registers them:
 
 ```
-sudo docker exec rig_onsitepot_1 bash -c "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+sudo docker exec rig_onsitepot_1 /bin/bash -c "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
 ```
 
 The default configuration provides web access to the Librarian over the port
@@ -96,6 +96,33 @@ The default configuration provides web access to the Librarian over the port
 you need to replace `localhost` with a particular IP address
 [as per this webpage](http://www.markhneedham.com/blog/2015/11/08/docker-1-9-port-forwarding-on-mac-os-x/).
 
+### Registering data with the RTP system and processing everything
+
+Let’s say that we want to push some data through the real timep processor. For
+now, RTP and the Librarian don’t talk to each other, so we need to manually notify it about data:
+
+```
+sudo docker exec rig_onsitepot_1 /bin/bash -c "/hera/rtp/bin/add_observations_paper.py /data/*/*.uv"
+```
+
+To trigger processing, we need to flag the data as ready for processing:
+
+```
+sudo docker exec rig_onsitepot_1 /bin/bash -c "/hera/rtp/bin/reset_observations.py --file /data/*/*.uv"
+```
+
+Things should now start crunching inside the `rig_rtpclient_1` and
+`rig_rtpserver_1` containers. The following commands will print out the output
+from these containers, which should show the processing steps running:
+
+```
+sudo docker logs rig_rtpclient_1
+sudo docker logs rig_rtpserver_1
+```
+
+Files will appear in the `rig` subdirectories `rtpclient`, `rtpserver`, and so
+on. When datasets are fully processed, the processed data will appear back in
+the `onsitepot` directory.
 
 ### Cleaning up
 
