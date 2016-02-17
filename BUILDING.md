@@ -30,12 +30,10 @@ repositories:
   [Aaron’s fork](https://github.com/AaronParsons/omnical/))
 * CAPO (e.g. [Peters’s fork](https://github.com/pkgw/capo/),
   [Danny’s fork](https://github.com/dannyjacobs/capo/))
-* the Librarian (e.g. [Peters’s fork](https://github.com/pkgw/hera-librarian/),
-  [David Anderson’s fork](https://github.com/davidpanderson/hera/))
-* the RTP (AKA “still”; e.g. [Peters’s fork](https://github.com/pkgw/hera-real-time-pipe/),
-  [Jon Ringuette’s fork](https://github.com/jonr667/still_workflow/))
-* the Monitor and Control subsystem (e.g. [Peters’s fork](https://github.com/pkgw/hera-monitor-and-control/),
-  [HERA-Team fork](https://github.com/HERA-Team/Monitor_and_Control/))
+* the Librarian ([HERA-Team fork](https://github.com/HERA-Team/librarian/))
+* the RTP (AKA “still”; [HERA-Team fork](https://github.com/HERA-Team/RTP/))
+* the Monitor and Control subsystem
+  ([HERA-Team fork](https://github.com/HERA-Team/Monitor_and_Control/))
 
 **NOTE**: some of my forks have fixes needed to get things to work!
 
