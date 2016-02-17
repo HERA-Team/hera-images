@@ -24,7 +24,7 @@ path = ${VOLUME}
 comment = ${VOLUME}
 EOF
 
-/hera/fill-still-config.sh
+/hera/fill-configs.sh
 
 # We don't actually use rsync in daemon mode, so all we need to do is run
 # sshd. In face, you could achieve the same effect with the current
