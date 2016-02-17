@@ -24,18 +24,12 @@ You can actually build the images without explicitly checking out all of the
 HERA code, but it’s easiest to do so. You should check out the following
 repositories:
 
-* AIPY (e.g. [Peters’s fork](https://github.com/pkgw/aipy/),
-  [Aaron’s fork](https://github.com/AaronParsons/aipy/))
-* Omnical (e.g. [Peters’s fork](https://github.com/pkgw/omnical/),
-  [Aaron’s fork](https://github.com/AaronParsons/omnical/))
-* CAPO (e.g. [Peters’s fork](https://github.com/pkgw/capo/),
-  [Danny’s fork](https://github.com/dannyjacobs/capo/))
-* the Librarian ([HERA-Team fork](https://github.com/HERA-Team/librarian/))
-* the RTP (AKA “still”; [HERA-Team fork](https://github.com/HERA-Team/RTP/))
-* the Monitor and Control subsystem
-  ([HERA-Team fork](https://github.com/HERA-Team/Monitor_and_Control/))
-
-**NOTE**: some of my forks have fixes needed to get things to work!
+* AIPY: [Aaron’s fork](https://github.com/AaronParsons/aipy/)
+* Omnical: [Aaron’s fork](https://github.com/AaronParsons/omnical/)
+* CAPO: [Danny’s fork](https://github.com/dannyjacobs/capo/)
+* Librarian: [HERA-Team fork](https://github.com/HERA-Team/librarian/)
+* RTP (AKA “still”): [HERA-Team fork](https://github.com/HERA-Team/RTP/)
+* Monitor and Control: [HERA-Team fork](https://github.com/HERA-Team/Monitor_and_Control/)
 
 
 Building the images
