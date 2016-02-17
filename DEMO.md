@@ -82,6 +82,8 @@ needed command is probably:
 sudo DB_PASSWORD=1234 /full/path/to/docker-compose -d
 ```
 
+If you a running an older version of MacOS, then you might run into an ‘Illegal Instruction:4’. Follow the solution on [stack overflow](http://stackoverflow.com/questions/33595593/what-does-illegal-instruction-4-mean-with-docker-compose-on-a-mac).
+
 We can now simulate various processes in the test rig.
 
 ### Registering data with the librarian and viewing the results
