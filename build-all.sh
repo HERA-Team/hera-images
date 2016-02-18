@@ -18,10 +18,12 @@ librarian="$4"
 rtp="$5"
 mandc="$6"
 
+images_dir=$(dirname "$0")
+
 set -e
-stack/build.sh "$aipy" "$omnical" "$capo" "$librarian" "$rtp" "$mandc"
-ssh-stack/build.sh
-rsync-pot/build.sh
-test-db/build.sh
-test-librarian/build.sh "$librarian"
-test-rtp/build.sh
+$images_dir/stack/build.sh "$aipy" "$omnical" "$capo" "$librarian" "$rtp" "$mandc"
+$images_dir/ssh-stack/build.sh
+$images_dir/rsync-pot/build.sh
+$images_dir/test-db/build.sh
+$images_dir/test-librarian/build.sh "$librarian"
+$images_dir/test-rtp/build.sh
