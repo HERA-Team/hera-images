@@ -141,7 +141,7 @@ Now we tell the librarian that we want to copy all of the data to the
 `offsitepot` in `offsite` system:
 
 ```
-docker exec rig_onsitepot_1 /bin/bash -c \
+docker exec rig_onsitelibrarian_1 /bin/bash -c \
   "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
 ```
 
