@@ -49,7 +49,8 @@ as follows. First:
 ```
 
 … using some helpful `bash` expansion tricks, if you put the checkouts in
-`~/code/`.
+`~/code/`. You can safely ignore warnings about non-reproducibility, unless
+you want to make images that can be built reproducibility.
 
 Here, each bracketed term should be the path to the corresponding Git
 checkout. You can also provide a URL that allows you to define the input
