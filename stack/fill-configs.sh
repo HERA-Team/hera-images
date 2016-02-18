@@ -44,7 +44,7 @@ cluster_scheduler = 0
 prioritize_obs = 1
 neighbors = 1
 lock_all_neighbors_to_same_still = 1
-actions = UV_POT, UV, UVC, CLEAN_UV, UVCR, CLEAN_UVC, ACQUIRE_NEIGHBORS, UVCRE, NPZ, UVCRR, NPZ_POT, CLEAN_UVCRE, UVCRRE, CLEAN_UVCRR, CLEAN_NPZ, CLEAN_NEIGHBORS, UVCRRE_POT, CLEAN_UVCRRE, CLEAN_UVCR, COMPLETE
+actions = UV_POT, UV, UVC, CLEAN_UV, UVCR, CLEAN_UVC, ACQUIRE_NEIGHBORS, UVCRE, NPZ, UVCRR, NPZ_LIBRARIAN, CLEAN_UVCRE, UVCRRE, CLEAN_UVCRR, CLEAN_NPZ, CLEAN_NEIGHBORS, UVCRRE_LIBRARIAN, CLEAN_UVCRRE, CLEAN_UVCR, COMPLETE
 actions_endfile = UV_POT, UV, UVC, CLEAN_UV, UVCR, CLEAN_UVC, CLEAN_UVCR, COMPLETE
 
 [UV]
@@ -75,8 +75,8 @@ args = [basename+'cRE']
 [UVCRR]
 args = [basename+'cR']
 
-[NPZ_POT]
-args = [basename+'cRE.npz', '%s:%s' % (pot, path)]
+[NPZ_LIBRARIAN]
+args = ['onsite', basename+'cRE.npz']
 
 [CLEAN_UVCRE]
 args = [basename+'cRE']
@@ -93,8 +93,8 @@ args = [basename+'cRE.npz']
 [CLEAN_NEIGHBORS]
 args =  [n[-1] + 'cR' for n in neighbors if n[0] != stillhost]
 
-[UVCRRE_POT]
-args = [basename+'cRRE', '%s:%s' % (pot, path)]
+[UVCRRE_LIBRARIAN]
+args = ['onsite', basename+'cRRE']
 
 [CLEAN_UVCRRE]
 args = [basename+'cRRE']
