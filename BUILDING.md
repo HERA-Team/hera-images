@@ -59,7 +59,18 @@ repository in question; see the comments in [fetch-tree.sh](fetch-tree.sh).
 
 Running this script will create a Docker image named `hera-stack:YYYYMMDD`,
 where the bit after the colon is the date. It will also alias it to
-`hera-stack:latest`.
+`hera-stack:latest`. You can confirm this by running `docker images`.
+
+There are other images to be built in a specified order. You can do rebuild
+*all* of them with a command like this:
+
+```
+./build-all.sh ~/code/{aipy,omnical,capo,librarian,RTP,Monitor_and_Control}
+```
+
+This doesn’t take terribly long (about 5 minutes on my machine), but if you
+want to build the derived images one-by-one, here are the remaining steps in
+dependency order.
 
 ```
 ./ssh-stack/build.sh
