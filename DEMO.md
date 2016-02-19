@@ -266,7 +266,7 @@ If you ever want to examine the database directly, you can do so by running
 the Postgres command-line client in a temporary container on the same network:
 
 ```
-docker run -it --net hera --rm hera-test-db psql -hdb -Upostgres
+docker run -it --net rig_hera --rm hera-test-db psql -hdb -Upostgres
 ```
 
 And if you want to see the logs from the Postgres server, run:
