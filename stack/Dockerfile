@@ -29,20 +29,26 @@ RUN conda install -y \
     configparser \
     pyfits
 
-COPY hera fill-configs.sh hl_client.cfg /hera/
+COPY hera/aipy /hera/aipy
+RUN cd /hera/aipy && python ./setup.py install
 
-RUN cd /hera/aipy && \
-      python ./setup.py install && \
-    cd /hera/omnical && \
-      python ./setup.py install && \
-    cd /hera/capo && \
+COPY hera/omnical /hera/omnical
+RUN cd /hera/omnical && python ./setup.py install
+
+COPY hera/capo /hera/capo
+RUN cd /hera/capo && \
       (cd Compress/ddr_compress && python setup.py install) && \
-      python ./setup.py install && \
-    cd /hera/librarian && \
-      python ./setup.py install && \
-    cd /hera/rtp && \
-      mkdir -p log etc && \
-    cd /hera/mandc && \
-      python ./setup.py install && \
-    cp /hera/hl_client.cfg /.hl_client.cfg && \
+      python ./setup.py install
+
+COPY hera/librarian /hera/librarian
+RUN cd /hera/librarian && python ./setup.py install
+
+COPY hera/rtp /hera/rtp
+RUN cd /hera/rtp && mkdir -p log etc
+
+COPY hera/mandc /hera/mandc
+RUN cd /hera/mandc && python ./setup.py install
+
+COPY fill-configs.sh hl_client.cfg /hera/
+RUN cp /hera/hl_client.cfg /.hl_client.cfg && \
     cp /hera/hl_client.cfg /root/.hl_client.cfg
