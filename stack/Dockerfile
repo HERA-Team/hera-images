@@ -51,4 +51,5 @@ RUN cd /hera/mandc && python ./setup.py install
 
 COPY fill-configs.sh hl_client.cfg /hera/
 RUN cp /hera/hl_client.cfg /.hl_client.cfg && \
-    cp /hera/hl_client.cfg /root/.hl_client.cfg
+    cp /hera/hl_client.cfg /root/.hl_client.cfg && \
+    echo export PATH=/opt/conda/bin:\$PATH >>/root/.bashrc
