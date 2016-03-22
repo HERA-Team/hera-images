@@ -11,10 +11,10 @@ insert into source (name, authenticator, create_time) values
   ('Correlator', '9876543211', NOW());
 
 insert into store (
-  name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
+  name, create_time, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values
-  /* 100 GiB capacity; rsync pots do not run httpd but set http_prefix anyway */
-  ('onsitepot', NOW(), 107374182400, 0, 'root@onsitepot:/data', 'http://onsitepot/data',
+  /* rsync pots do not run httpd but set http_prefix anyway */
+  ('onsitepot', NOW(), 'root@onsitepot:/data', 'http://onsitepot/data',
    '/data', 'root@onsitepot', 0);
 
 
@@ -25,7 +25,7 @@ insert into source (name, authenticator, create_time) values
   ('Correlator', '9876543211', NOW());
 
 insert into store (
-  name, create_time, capacity, used, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
+  name, create_time, rsync_prefix, http_prefix, path_prefix, ssh_prefix, unavailable
 ) values
-  ('offsitelibrarian', NOW(), 107374182400, 0, 'root@offsitelibrarian:/data', '',
+  ('offsitelibrarian', NOW(), 'root@offsitelibrarian:/data', '',
    '/data', '', 0);
