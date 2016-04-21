@@ -5,6 +5,8 @@
    Python code through SQLAlchemy's magic.
 */
 
+create database hera_librarian_onsite;
+create database hera_librarian_offsite;
 create database hera_rtp;
 create database hera_mc;
 create database hera_mc_test;
