@@ -7,7 +7,7 @@
 FROM hera-ssh-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
-COPY setup.sh hl_client.cfg insecure_* ssh_host_* /setup/
+COPY setup.sh hl_client.cfg insecure_* ssh_host_* test_db_* /setup/
 RUN /bin/bash /setup/setup.sh
 COPY launch.sh /
 

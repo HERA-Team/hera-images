@@ -34,6 +34,11 @@ chmod 600 /root/.ssh/*
 
 cp /setup/hl_client.cfg /root/.hl_client.cfg
 
+# Librarian
+
+cp /setup/test_db_* /hera/librarian/server/
+chmod +x /hera/librarian/server/test_db_*
+
 # Self-destruct!
 
 cd /

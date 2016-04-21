@@ -33,7 +33,30 @@ cat <<EOF >server-config.json
         }
     }
 }
-
 EOF
+
+# We need to wait for the database to be ready to accept connections before we
+# can start. This is a simple (but hacky) way of doing this:
+
+host=db
+port=5432
+
+while true ; do
+    (echo >/dev/tcp/$host/$port) >/dev/null 2>&1 && break
+    echo waiting for database ...
+    sleep 1
+done
+
+# OK, we may continue
+
+stamp=test_${1}_database_initialized.stamp
+
+if [ ! -f $stamp ] ; then
+    ./initdb.py
+    if [ -f test_db_prefill_${1}.py ] ; then
+	./test_db_prefill_${1}.py
+    fi
+    touch $stamp
+fi
 
 exec ./runserver.py
