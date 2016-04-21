@@ -25,5 +25,5 @@ $images_dir/stack/build.sh "$aipy" "$omnical" "$capo" "$librarian" "$rtp" "$mand
 $images_dir/ssh-stack/build.sh
 $images_dir/rsync-pot/build.sh
 $images_dir/test-db/build.sh
-$images_dir/test-librarian/build.sh "$librarian"
+$images_dir/test-librarian/build.sh
 $images_dir/test-rtp/build.sh
