@@ -6,6 +6,8 @@
 # to significantly streamline the image generation. The init is split into two
 # pieces so that it's quick to rebuild when we're only changing the database
 # initialization.
+#
+# *** Postgres version has changed? Dockerfile, not this one, needs editing. ***
 
 set -e -x
 

@@ -9,12 +9,20 @@
 #
 # See https://hub.docker.com/_/postgres/ for information on on how the base
 # image works.
+#
+# The available version of Postgres evolves quickly. If the build dies due to the
+# requested version of postgres not being found, check for what's available at:
+#
+#    http://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-9.5/
+#
+# You want the latest "pgdg70+1" version (unless the underlying Debian release
+# changes).
 
 FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 ENV PG_MAJOR 9.5
-ENV PG_VERSION 9.5.1-1.pgdg70+1
+ENV PG_VERSION 9.5.2-1.pgdg70+1
 ENV LANG en_US.utf8
 ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
 ENV PGDATA /var/lib/postgresql/data
