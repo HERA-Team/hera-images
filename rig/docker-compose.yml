@@ -15,7 +15,7 @@ services:
       - "5432"
 
   onsitelibrarian:
-    image: hera-test-librarian
+    image: hera-test-librarian-v2
     hostname: onsitelibrarian
     command: /launch.sh onsite
     depends_on:
@@ -25,7 +25,7 @@ services:
     networks:
       - hera
     ports:
-      - "21106:80"
+      - "21106:21106"
     volumes:
       - ./onsitelibrarian:/data
 
@@ -40,7 +40,7 @@ services:
       - ./onsitepot:/data
 
   offsitelibrarian:
-    image: hera-test-librarian
+    image: hera-test-librarian-v2
     hostname: offsitelibrarian
     command: /launch.sh offsite
     depends_on:
@@ -50,7 +50,7 @@ services:
     networks:
       - hera
     ports:
-      - "21107:80"
+      - "21107:21106"
     volumes:
       - ./offsitelibrarian:/data
 
@@ -63,39 +63,6 @@ services:
       - hera
     volumes:
       - ./offsitepot:/data
-
-  rtpclient:
-    image: hera-test-rtp
-    hostname: rtpclient
-    command: /launch.sh --client
-    depends_on:
-      - db
-    environment:
-      HERA_DB_PASSWORD: "$DB_PASSWORD"
-    networks:
-      - hera
-    volumes:
-      - ./rtpclient:/data
-
-  # With a bit of work we should be able to use "docker-compose scale" to
-  # create a bunch of RTP servers, but we can't do it yet. If we don't specify
-  # a hostname specifically, the rtpclient can't look up the servers on the
-  # network; but if we do, everything gets the same hostname when scaled out.
-  # They also all share the same volume, so you'd have to add some code to
-  # uniquify by hostname or something.
-  
-  rtpserver:
-    image: hera-test-rtp
-    hostname: rtpserver
-    command: /launch.sh --server
-    depends_on:
-      - db
-    environment:
-      HERA_DB_PASSWORD: "$DB_PASSWORD"
-    networks:
-      - hera
-    volumes:
-      - ./rtpserver:/data
 
 networks:
   hera:
