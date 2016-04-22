@@ -32,7 +32,7 @@ to build them yourself, but for a quick test you can fetch them off of the
 containing this file, run:
 
 ```
-./pull.sh -t 20160216
+./pull.sh -t 20160422
 ```
 
 [Docker Hub]: https://hub.docker.com/
