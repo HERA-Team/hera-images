@@ -4,13 +4,6 @@
 
 set -e -x
 
-# Packages
-
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-  openssh-client
-rm -rf /var/lib/apt/lists/*
-
 # SSH
 
 mkdir -p /var/run/sshd /root/.ssh /etc/ssh
@@ -29,6 +22,8 @@ echo -n '* ' >/root/.ssh/known_hosts
 cat /etc/ssh/ssh_host_rsa_key.pub >>/root/.ssh/known_hosts
 chmod 700 /root/.ssh
 chmod 600 /root/.ssh/*
+
+# Librarian client config
 
 cp /setup/hl_client.cfg /root/.hl_client.cfg
 

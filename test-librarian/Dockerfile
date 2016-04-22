@@ -11,5 +11,5 @@ COPY setup.sh hl_client.cfg insecure_* ssh_host_* /setup/
 RUN /bin/bash /setup/setup.sh
 COPY launch.sh /
 
-EXPOSE 80
+EXPOSE 21106
 CMD ["/launch.sh"]
