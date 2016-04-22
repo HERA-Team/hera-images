@@ -34,8 +34,10 @@ chmod 600 /root/.ssh/*
 
 cp /setup/hl_client.cfg /root/.hl_client.cfg
 
-# Librarian
+# Librarian. The rm -f is a workaround for when I develop
+# with local symlinks in place.
 
+rm -f /hera/librarian/server/test_db_*
 cp /setup/test_db_* /hera/librarian/server/
 chmod +x /hera/librarian/server/test_db_*
 

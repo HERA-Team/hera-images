@@ -51,9 +51,9 @@ done
 
 stamp=test_${1}_database_initialized.stamp
 
-if [ ! -f $stamp ] ; then
+if [ ! -e $stamp ] ; then
     ./initdb.py
-    if [ -f test_db_prefill_${1}.py ] ; then
+    if [ -e test_db_prefill_${1}.py ] ; then
 	./test_db_prefill_${1}.py
     fi
     touch $stamp
