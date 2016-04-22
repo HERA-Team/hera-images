@@ -62,20 +62,18 @@ repository.
 Create a directory called `onsitepot` and copy your demo data into it. The
 final directory structure should look like `onsitepot/24.../zen.*.uv`.
 
-To start up the servers on OS X:
+To start up the servers:
 
 ```
-export DB_PASSWORD=1234 docker-compose up -d
+export DB_PASSWORD=1234
+docker-compose up -d
 ```
 
-This should say that it created and started a bunch of stuff. On Linux, the
-needed command is probably:
+This should say that it created and started a bunch of stuff.
 
-```
-sudo DB_PASSWORD=1234 /full/path/to/docker-compose -d
-```
-
-If you a running an older version of MacOS, then you might run into an ‘Illegal Instruction:4’. Follow the solution on [stack overflow](http://stackoverflow.com/questions/33595593/what-does-illegal-instruction-4-mean-with-docker-compose-on-a-mac).
+If you a running an older version of MacOS, then you might run into an
+‘Illegal Instruction:4’. Follow the solution on
+[stack overflow](http://stackoverflow.com/questions/33595593/what-does-illegal-instruction-4-mean-with-docker-compose-on-a-mac).
 
 We can now simulate various processes in the test rig.
 
@@ -86,11 +84,11 @@ tell the Librarian about them. This command registers them:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv*"
+  "add_obs_librarian.py --site onsite --store onsitepot --store_path /data '*/*.uv*'"
 ```
 
 The default configuration provides web access to the Librarian over the port
-21106, so you should be able to visit <http://localhost:21106/hl.php> with
+21106, so you should be able to visit <http://localhost:21106/> with
 `9876543210` as an authenticator and see the web interface. On OS X machines,
 you need to replace `localhost` with a particular IP address
 [as per this webpage](http://www.markhneedham.com/blog/2015/11/08/docker-1-9-port-forwarding-on-mac-os-x/).
@@ -130,33 +128,25 @@ the `onsitepot` directory.
 
 Let’s say that we have some data on the “onsite” librarian and we want to copy
 them to a different “offsite” librarian. As with the first example, you have
-to tell the Librarian about your data **if you haven’t already done so**:
+to tell the Librarian about your data if you haven’t already done so:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "add_obs_librarian.py --site onsite --store onsitepot /data/*/*.uv
+  "add_obs_librarian.py --site onsite --store onsitepot --store_path /data '*/*.uv*'"
 ```
 
-Now we tell the librarian that we want to copy all of the data to the
-`offsitepot` in `offsite` system:
+We can launch a copy of a file like this:
 
 ```
-docker exec rig_onsitelibrarian_1 /bin/bash -c \
-  "/var/www/html/copy_maker --remote_site offsite --remote_store offsitepot"
+docker exec rig_onsitepot_1 /bin/bash -c \
+  "launch_librarian_copy.py onsite offsite zen.2456892.48958.xx.uv"
 ```
 
-To actually execute the copies, we have to run the `copy_master` program on
-the onsite librarian:
-
-```
-docker exec rig_onsitelibrarian_1 /bin/bash -c \
-  "/var/www/html/copy_master"
-```
-
-This will only run ten copies by default. They will appear to succeed but due
-to some database bugs there are actually errors, which you will see if you
-visit <http://localhost:21106/hl.php?action=tasks> (again, replacing
-`localhost` with an IP address if you’re on OS X).
+where the last argument is the name of a file obtained from the
+[onsite status UI](http://localhost:21106/). If you check out the
+[status UI of the offsite Librarian](http://localhost:21107/), you should see
+that the file has appeared. You should also see it in the `rig/offsitepot/`
+data-storage directory.
 
 
 ### Cleaning up
