@@ -14,5 +14,5 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 
 from librarian_server import db, file, store
-db.session.add (store.Store ('offpot1', '/data', 'offsitepot'))
+db.session.add (store.Store ('offsitepot', '/data', 'offsitepot'))
 db.session.commit ()
