@@ -14,12 +14,15 @@ set -e
 
 cd /hera/librarian/server
 
-cat <<EOF >server-config.json
+cat <<EOF >test-$1-config.json
 {
     "SECRET_KEY": "7efa9258e0b841eda8a682ccdd53c65d493a7dc4b95a5752b0db1bbbe96bd269",
     "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_librarian_$1",
     "SQLALCHEMY_TRACK_MODIFICATIONS": false,
     "host": "0.0.0.0",
+    "displayed_site_name": "$1",
+    "initialize-database": true,
+    "flask-debug": true,
 
     "sources": {
         "RTP": {
@@ -31,6 +34,10 @@ cat <<EOF >server-config.json
         "HumanUser": {
             "authenticator": "9876543212"
         }
+    },
+
+    "add-stores": {
+      "${1}pot": { "path_prefix": "/data", "ssh_host": "${1}pot" }
     }
 }
 EOF
@@ -47,16 +54,7 @@ while true ; do
     sleep 1
 done
 
-# OK, we may continue
+# OK, we can continue
 
-stamp=test_${1}_database_initialized.stamp
-
-if [ ! -e $stamp ] ; then
-    ./initdb.py
-    if [ -e test_db_prefill_${1}.py ] ; then
-	./test_db_prefill_${1}.py
-    fi
-    touch $stamp
-fi
-
+export LIBRARIAN_CONFIG_PATH=test-$1-config.json
 exec ./runserver.py

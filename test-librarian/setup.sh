@@ -8,9 +8,7 @@ set -e -x
 
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-  openssh-client \
-  rsync \
-  zip
+  openssh-client
 rm -rf /var/lib/apt/lists/*
 
 # SSH
@@ -33,13 +31,6 @@ chmod 700 /root/.ssh
 chmod 600 /root/.ssh/*
 
 cp /setup/hl_client.cfg /root/.hl_client.cfg
-
-# Librarian. The rm -f is a workaround for when I develop
-# with local symlinks in place.
-
-rm -f /hera/librarian/server/test_db_*
-cp /setup/test_db_* /hera/librarian/server/
-chmod +x /hera/librarian/server/test_db_*
 
 # Self-destruct!
 
