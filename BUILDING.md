@@ -120,7 +120,7 @@ date=$(date +%Y%m%d)
 user=pkgw
 base=hera-stack
 docker tag $base:$date docker.io/$user/$base:$date
-docker tag -f $base:$date docker.io/$user/$base:latest
+docker tag $base:$date docker.io/$user/$base:latest
 docker push docker.io/$user/$base:$date
 docker push docker.io/$user/$base:latest
 ```

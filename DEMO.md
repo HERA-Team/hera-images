@@ -21,7 +21,7 @@ leads on a non-HERA-specific problem,
 older instructions work with 1.9.)
 
 I’ve written the commands below without a `sudo` prefix. On Linux, you
-probably need them.
+might need it.
 
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having

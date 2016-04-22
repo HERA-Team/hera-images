@@ -10,7 +10,7 @@
 : ${HUBUSER:=pkgw}
 : ${VERSION:=$(date +%Y%m%d)}
 : ${IMAGES:=hera-stack hera-rsync-pot hera-test-db hera-test-librarian hera-test-rtp}
-: ${DOCKER:=sudo docker}
+: ${DOCKER:=docker}
 : ${TAGARGS:=}
 
 set -e
@@ -22,7 +22,7 @@ function mydocker () {
 
 for image in $IMAGES ; do
     mydocker tag $TAGARGS $image:$VERSION docker.io/$HUBUSER/$image:$VERSION
-    mydocker tag -f $TAGARGS $image:$VERSION docker.io/$HUBUSER/$image:latest
+    mydocker tag $TAGARGS $image:$VERSION docker.io/$HUBUSER/$image:latest
     mydocker push docker.io/$HUBUSER/$image:$VERSION
     mydocker push docker.io/$HUBUSER/$image:latest
 done

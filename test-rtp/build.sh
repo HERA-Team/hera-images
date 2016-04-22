@@ -18,14 +18,7 @@ if [ ! -f $specdir/Dockerfile ] ; then
 fi
 
 imagename=hera-test-rtp:$(date +%Y%m%d)
-
-if [ -z "$DOCKER" ] ; then
-   if [ $(uname -s) = Linux ] ; then
-       DOCKER="sudo docker"
-   else
-       DOCKER="docker"
-   fi
-fi
+: ${DOCKER:=docker}
 
 # Set up files and build.
 
@@ -35,6 +28,6 @@ echo "Temporary work directory is $work ."
 (cd $specdir && cp -a * .dockerignore $work)
 $DOCKER build -t $imagename $work
 echo "Built image $imagename ."
-$DOCKER tag -f $imagename ${imagename%:*}:latest
+$DOCKER tag $imagename ${imagename%:*}:latest
 rm -rf $work
 exit 0

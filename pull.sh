@@ -7,14 +7,7 @@
 : ${HUBUSER:=pkgw}
 : ${IMAGES:=hera-rsync-pot hera-test-db hera-test-librarian hera-test-rtp}
 : ${TAGARGS:=}
-
-if [ -z "$DOCKER" ] ; then
-   if [ $(uname -s) = Linux ] ; then
-       DOCKER="sudo docker"
-   else
-       DOCKER="docker"
-   fi
-fi
+: ${DOCKER:=docker}
 
 set -e
 
@@ -48,6 +41,6 @@ for image in $IMAGES ; do
     mydocker pull docker.io/$HUBUSER/$image:$VERSION
 
     if $tag ; then
-	mydocker tag -f docker.io/$HUBUSER/$image:$VERSION $image:latest
+	mydocker tag docker.io/$HUBUSER/$image:$VERSION $image:latest
     fi
 done
