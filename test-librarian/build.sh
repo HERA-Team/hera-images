@@ -20,7 +20,7 @@ if [ ! -f $specdir/Dockerfile ] ; then
     exit 1
 fi
 
-imagename=hera-test-librarian-v2:$(date +%Y%m%d)
+imagename=hera-test-librarian:$(date +%Y%m%d)
 : ${DOCKER:=docker}
 
 # Set up files and build.

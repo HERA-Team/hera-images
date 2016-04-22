@@ -15,7 +15,7 @@ services:
       - "5432"
 
   onsitelibrarian:
-    image: hera-test-librarian-v2
+    image: hera-test-librarian
     hostname: onsitelibrarian
     command: /launch.sh onsite
     depends_on:
@@ -40,7 +40,7 @@ services:
       - ./onsitepot:/data
 
   offsitelibrarian:
-    image: hera-test-librarian-v2
+    image: hera-test-librarian
     hostname: offsitelibrarian
     command: /launch.sh offsite
     depends_on:
