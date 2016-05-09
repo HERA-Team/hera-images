@@ -76,7 +76,7 @@ args = [basename+'cRE']
 args = [basename+'cR']
 
 [NPZ_LIBRARIAN]
-args = ['onsite', '%s/%scRE.npz' % (path, basename)]
+args = ['onsite-rtp', '%s/%scRE.npz' % (parent_dirs, basename)]
 
 [CLEAN_UVCRE]
 args = [basename+'cRE']
@@ -94,10 +94,10 @@ args = [basename+'cRE.npz']
 args =  [n[-1] + 'cR' for n in neighbors if n[0] != stillhost]
 
 [UVCRRE_LIBRARIAN]
-args = ['onsite', '%s/%scRRE' % (path, basename)]
+args = ['onsite-rtp', '%s/%scRRE' % (parent_dirs, basename)]
 
 [LIBRARIAN_MARK_FINISHED]
-args = ['onsite', basename]
+args = ['onsite-rtp', basename]
 
 [CLEAN_UVCRRE]
 args = [basename+'cRRE']

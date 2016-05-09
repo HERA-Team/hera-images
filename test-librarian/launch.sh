@@ -31,8 +31,11 @@ cat <<EOF >test-$1-config.json
         "Correlator": {
             "authenticator": "9876543211"
         },
-        "HumanUser": {
+        "Karoo": {
             "authenticator": "9876543212"
+        },
+        "HumanUser": {
+            "authenticator": "human"
         }
     },
 

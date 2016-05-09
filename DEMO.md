@@ -92,7 +92,7 @@ tell the Librarian about them. This command registers them:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "add_obs_librarian.py --site onsite --store onsitepot --store_path /data '*/*.uv*'"
+  "add_obs_librarian.py --site onsite-correlator --store onsitepot --store_path /data '*/*.uv*'"
 ```
 
 This should churn for a while, then print out the names of the files it added.
@@ -111,7 +111,7 @@ to tell the Librarian about your data if you haven’t already done so:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "add_obs_librarian.py --site onsite --store onsitepot --store_path /data '*/*.uv*'"
+  "add_obs_librarian.py --site onsite-correlator --store onsitepot --store_path /data '*/*.uv*'"
 ```
 
 (Running this command twice results in nothing changing — the Librarian already
@@ -126,7 +126,7 @@ We can now launch a copy of a file like this:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "launch_librarian_copy.py onsite offsite zen.2456892.48958.xx.uv"
+  "launch_librarian_copy.py onsite-rtp offsite-karoo zen.2456892.48958.xx.uv"
 ```
 
 where the last argument is the name of a file obtained from the
@@ -180,5 +180,5 @@ you’ve done. It doesn’t delete the data directories creatd below `rig/`. To
 really blow everything away, in `rig/` you need to run:
 
 ```
-rm -rf offsitelibrarian  offsitepot  onsitelibrarian  onsitepot
+rm -rf offsitelibrarian offsitepot onsitelibrarian onsitepot
 ```
