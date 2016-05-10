@@ -28,7 +28,7 @@ might need it.
 To do this demo, you need to load the appropriate server “images” into your
 [Docker] installation. For serious development, you’ll probably end up having
 to build them yourself, but for a quick test you can fetch them off of the
-[Docker Hub]. This involves dowloading about 4 gigabytess of data. In the
+[Docker Hub]. This involves dowloading about 4 gigabytes of data. In the
 directory containing this file, run:
 
 ```
@@ -42,7 +42,7 @@ This will download the needed images and give them useful short aliases — the
 doing.
 
 For development, you sometimes need to build images yourself. See
-[BUILDING.md] for instructions on that.
+[BUILDING](BUILDING.md) for instructions on that.
 
 ### Seeding with data
 
