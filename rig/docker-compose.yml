@@ -64,6 +64,39 @@ services:
     volumes:
       - ./offsitepot:/data
 
+  rtpclient:
+    image: hera-test-rtp
+    hostname: rtpclient
+    command: /launch.sh --client -d /data
+    depends_on:
+      - db
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    volumes:
+      - ./rtpclient:/data
+
+  # With a bit of work we should be able to use "docker-compose scale" to
+  # create a bunch of RTP servers, but we can't do it yet. If we don't specify
+  # a hostname specifically, the rtpclient can't look up the servers on the
+  # network; but if we do, everything gets the same hostname when scaled out.
+  # They also all share the same volume, so you'd have to add some code to
+  # uniquify by hostname or something.
+
+  rtpserver:
+    image: hera-test-rtp
+    hostname: rtpserver
+    command: /launch.sh --server -d /data
+    depends_on:
+      - db
+    environment:
+      HERA_DB_PASSWORD: "$DB_PASSWORD"
+    networks:
+      - hera
+    volumes:
+      - ./rtpserver:/data
+
 networks:
   hera:
     driver: bridge
