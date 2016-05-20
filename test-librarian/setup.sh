@@ -4,6 +4,10 @@
 
 set -e -x
 
+# Web server
+
+conda install -y tornado
+
 # SSH
 
 mkdir -p /var/run/sshd /root/.ssh /etc/ssh
