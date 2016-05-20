@@ -105,7 +105,7 @@ sessions” with the following command:
 
 ```
 docker exec rig_onsitelibrarian_1 /bin/bash -c \
-  "cd /hera/librarian; python -c \"import hera_librarian as L;
+  "cd /hera/librarian; python -c \"import hera_librarian as L; \
    c = L.LibrarianClient('onsite-correlator'); print c.assign_observing_sessions()\""
 ```
 
