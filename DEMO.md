@@ -32,7 +32,7 @@ to build them yourself, but for a quick test you can fetch them off of the
 directory containing this file, run:
 
 ```
-./pull.sh -t 20160509
+./pull.sh -t 20160520
 ```
 
 [Docker Hub]: https://hub.docker.com/
@@ -104,14 +104,13 @@ After files have been added, we can group their observations into “observing
 sessions” with the following command:
 
 ```
-docker exec rig_onsitelibrarian_1 /bin/bash -c \
-  "cd /hera/librarian; python -c \"import hera_librarian as L; \
-   c = L.LibrarianClient('onsite-correlator'); print c.assign_observing_sessions()\""
+docker exec rig_onsitelibrarian_1 \
+  librarian_assign_sessions.py onsite-correlator
 ```
 
-(Yeah, this is pretty awkward right now.) This command doesn’t change a whole
-bunch as far as humans are concerned, but it’s necessary for the Librarian and
-Real Time Pipe to orchestrate their operations.
+This command doesn’t change a whole bunch as far as humans are concerned, but
+it’s necessary for the Librarian and Real Time Pipe to orchestrate their
+operations.
 
 ### Registering data with the RTP system and processing everything
 
