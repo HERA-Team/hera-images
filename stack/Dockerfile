@@ -29,8 +29,7 @@ RUN conda install -y \
     sqlalchemy \
   && pip install \
     configparser \
-    flask-sqlalchemy \
-    pyfits
+    flask-sqlalchemy
 
 COPY hera/aipy /hera/aipy
 RUN cd /hera/aipy && python ./setup.py install
