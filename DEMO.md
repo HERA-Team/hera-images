@@ -89,7 +89,7 @@ tell the Librarian about them. This command registers them:
 
 ```
 docker exec rig_onsitepot_1 \
-  add_obs_librarian.py onsite-correlator onsitepot '/data/*/*.uv*'
+  bash -c "add_obs_librarian.py onsite-correlator onsitepot /data/*/*.uv*"
 ```
 
 This should churn for a while, then print out the names of the files it added.
