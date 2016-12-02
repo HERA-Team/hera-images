@@ -25,7 +25,7 @@ services:
     networks:
       - hera
     ports:
-      - "21106:21106"
+      - "21110:21106"
     volumes:
       - ./onsitelibrarian:/data
 
@@ -74,6 +74,8 @@ services:
       HERA_DB_PASSWORD: "$DB_PASSWORD"
     networks:
       - hera
+    ports:
+      - "5000:5000"
     volumes:
       - ./rtpclient:/data
 

@@ -13,9 +13,17 @@
 mkdir -p /.hera_mc /root/.hera_mc
 cat <<EOF >/.hera_mc/mc_config.json
 {
-  "location": "karoo",
-  "mc_db": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_mc",
-  "test_db": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_mc_test"
+  "default_db_name": "production",
+  "databases": {
+    "production": {
+      "url": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_mc",
+      "mode": "production"
+    },
+    "testing": {
+      "url": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_mc_test",
+      "mode": "testing"
+    }
+  }
 }
 EOF
 cp /.hera_mc/mc_config.json /root/.hera_mc/

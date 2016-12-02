@@ -22,8 +22,8 @@ cat <<EOF >test-$1-config.json
     "SQLALCHEMY_TRACK_MODIFICATIONS": false,
     "host": "0.0.0.0",
     "displayed_site_name": "$1",
-    "initialize-database": true,
-    "flask-debug": true,
+    "initialize_database": true,
+    "flask_debug": true,
 
     "sources": {
         "RTP": {

@@ -2,19 +2,23 @@
 # Copyright 2016 the HERA Collaboration
 # Licensed under the BSD License.
 
-cat <<EOF >/tmp/tempdb.cfg
+mkdir -p /root/.hera_mc
+cat <<EOF >/root/.hera_mc/mc_config.json
 {
-  "location":"tempinit",
-  "mc_db":"postgresql://postgres:$POSTGRES_PASSWORD@/hera_mc?host=/var/run/postgresql",
-  "test_db":"invalid"
+  "default_db_name": "production",
+  "databases": {
+    "production": {
+      "url": "postgresql://postgres:$HERA_DB_PASSWORD@:5432/hera_mc",
+      "mode": "testing"
+    },
+    "testing": {
+      "url": "postgresql://postgres:$HERA_DB_PASSWORD@:5432/hera_mc_test",
+      "mode": "testing"
+    }
+  }
 }
 EOF
 
-python <<'EOF'
-from hera_mc import mc
-
-db = mc.DB_declarative ('/tmp/tempdb.cfg', use_test=False)
-db.create_tables ()
-EOF
-
-rm -f /tmp/tempdb.cfg
+ln -s /var/run/postgresql/.s.PGSQL.5432 /tmp/
+mc_initialize_db.py
+rm -f /tmp/.s.PGSQL.5432

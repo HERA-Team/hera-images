@@ -6,16 +6,18 @@
 # This builds a reasonable base image with an Anaconda Python installation
 # (well, Miniconda) and the standard HERA software stack.
 
-FROM continuumio/miniconda:4.0.5
+FROM continuumio/miniconda:4.1.11
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     build-essential \
+    libgl1-mesa-swx11 \
   && rm -rf /var/lib/apt/lists/* && \
   mkdir -p /hera
 
-RUN conda install -y \
+RUN conda update --all \
+  && conda install -y \
     astropy \
     basemap \
     ephem \
@@ -27,9 +29,11 @@ RUN conda install -y \
     psycopg2 \
     scipy \
     sqlalchemy \
+    tabulate \
   && pip install \
     configparser \
-    flask-sqlalchemy
+    flask-sqlalchemy \
+    uptime
 
 COPY hera/aipy /hera/aipy
 RUN cd /hera/aipy && python ./setup.py install
