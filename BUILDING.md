@@ -29,7 +29,7 @@ repositories:
 * CAPO: [Danny’s fork](https://github.com/dannyjacobs/capo/)
 * Librarian: [HERA-Team fork](https://github.com/HERA-Team/librarian/)
 * RTP (AKA “still”): [HERA-Team fork](https://github.com/HERA-Team/RTP/)
-* Monitor and Control: [HERA-Team fork](https://github.com/HERA-Team/Monitor_and_Control/)
+* Monitor and Control: [HERA-Team fork](https://github.com/HERA-Team/hera_mc/)
 
 
 Building the images
@@ -45,7 +45,7 @@ as follows. First:
 **For example**, you might write:
 
 ```
-./stack/build.sh ~/code/{aipy,omnical,capo,librarian,RTP,Monitor_and_Control}
+./stack/build.sh ~/code/{aipy,omnical,capo,librarian,RTP,hera_mc}
 ```
 
 … using some helpful `bash` expansion tricks, if you put the checkouts in
@@ -65,7 +65,7 @@ There are other images to be built in a specified order. You can do rebuild
 *all* of them with a command like this:
 
 ```
-./build-all.sh ~/code/{aipy,omnical,capo,librarian,RTP,Monitor_and_Control}
+./build-all.sh ~/code/{aipy,omnical,capo,librarian,RTP,hera_mc}
 ```
 
 This doesn’t take terribly long (about 5 minutes on my machine), but if you
@@ -126,10 +126,6 @@ docker push docker.io/$user/$base:latest
 ```
 
 This is automated in the [publish.sh](publish.sh) shell script.
-
-**XXX**: Having a separate repository for each element of the stack means I
-have to rendundantly upload the data for the software stack to each one
-independently. Not the worst (if you’ve got OK bandwidth), but annoying.
 
 The images that need to be uploaded are:
 

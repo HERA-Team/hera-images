@@ -26,7 +26,7 @@ fi
 if [ $# -ne 1 ] ; then
     echo "usage: $0 [-t] <version>
 
-Where <version> is something like 20160216. This pulls HERA images from the
+Where <version> is something like 20161206. This pulls HERA images from the
 Docker Hub. If '-t' is given it will also tag them with names like
 'hera-test-db:latest', which is the form assumed by the sample scripts and
 docker-compose setup.
