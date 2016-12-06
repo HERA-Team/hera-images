@@ -22,6 +22,7 @@ RUN conda update --all \
     basemap \
     ephem \
     flask \
+    mako \
     matplotlib \
     nomkl \
     numpy \
@@ -31,6 +32,7 @@ RUN conda update --all \
     sqlalchemy \
     tabulate \
   && pip install \
+    alembic \
     configparser \
     flask-sqlalchemy \
     uptime

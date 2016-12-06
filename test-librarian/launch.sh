@@ -22,7 +22,6 @@ cat <<EOF >test-$1-config.json
     "SQLALCHEMY_TRACK_MODIFICATIONS": false,
     "host": "0.0.0.0",
     "displayed_site_name": "$1",
-    "initialize_database": true,
     "flask_debug": true,
 
     "sources": {
@@ -58,7 +57,8 @@ while true ; do
     sleep 1
 done
 
-# OK, we can continue
+# Make sure the database schema is up-to-date and go.
 
 export LIBRARIAN_CONFIG_PATH=test-$1-config.json
+alembic upgrade head
 exec ./runserver.py
