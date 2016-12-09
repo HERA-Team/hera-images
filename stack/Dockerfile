@@ -26,6 +26,7 @@ RUN conda update --all \
     matplotlib \
     nomkl \
     numpy \
+    pandas \
     psutil \
     psycopg2 \
     scipy \
