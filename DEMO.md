@@ -89,7 +89,7 @@ tell the Librarian about them. This command registers them:
 
 ```
 docker exec rig_onsitepot_1 \
-  bash -c "add_obs_librarian.py onsite-correlator onsitepot /data/*/*.uv*"
+  bash -c "add_obs_librarian.py local-correlator onsitepot /data/*/*.uv*"
 ```
 
 This should churn for a while, then print out the names of the files it added.
@@ -105,7 +105,7 @@ sessions” with the following command:
 
 ```
 docker exec rig_onsitelibrarian_1 \
-  librarian_assign_sessions.py onsite-correlator
+  librarian_assign_sessions.py local-correlator
 ```
 
 This command doesn’t change a whole bunch as far as humans are concerned, but
@@ -119,7 +119,7 @@ can tell the RTP to ask the Librarian for new data by running:
 
 ```
 docker exec rig_rtpclient_1 \
-  /hera/rtp/bin/load_observations_librarian.py --connection=onsite-rtp
+  /hera/rtp/bin/load_observations_librarian.py --connection=local-rtp
 ```
 
 To trigger processing, we need to flag the data as ready for processing:
@@ -156,7 +156,7 @@ We can now launch a copy of a file like this:
 
 ```
 docker exec rig_onsitepot_1 /bin/bash -c \
-  "launch_librarian_copy.py onsite-rtp offsite-karoo zen.2456892.48958.xx.uv"
+  "launch_librarian_copy.py local-rtp offsite-karoo zen.2456892.48958.xx.uv"
 ```
 
 where the last argument is the name of a file obtained from the
