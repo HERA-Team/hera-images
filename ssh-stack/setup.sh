@@ -20,6 +20,9 @@ cat /etc/ssh/ssh_host_rsa_key.pub >>/root/.ssh/known_hosts
 chmod 700 /root/.ssh
 chmod 600 /root/.ssh/*
 
+# Enable insecure but efficient arcfour256 cipher:
+echo 'Ciphers arcfour256,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com' >>/etc/ssh/sshd_config
+
 # Self-destruct!
 cd /
 rm -rf /setup/
