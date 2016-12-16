@@ -119,7 +119,7 @@ can tell the RTP to ask the Librarian for new data by running:
 
 ```
 docker exec rig_rtpclient_1 \
-  /hera/rtp/bin/load_observations_librarian.py --connection=onsite-correlator
+  /hera/rtp/bin/load_observations_librarian.py --connection=onsite-rtp
 ```
 
 To trigger processing, we need to flag the data as ready for processing:
