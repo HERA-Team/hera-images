@@ -116,7 +116,7 @@ standard port, 3306.
 On first startup the Librarian database is initialized with the following:
 
 * A `source` named `RTP` with authenticator `9876543210`.
-* A `source` named `Correlator` with authenticator `9876543211`.
+* A `source` named `correlator` with authenticator `9876543211`.
 * A `store` named `liblocal` with 100 GiB capacity and a `path_prefix` of
   `/hera/localstore`.
 * A `store` named `rsync0` with 100 GiB capacity and an `rsync_prefix` of

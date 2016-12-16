@@ -28,7 +28,7 @@ cat <<EOF >test-$1-config.json
         "RTP": {
             "authenticator": "9876543210"
         },
-        "Correlator": {
+        "correlator": {
             "authenticator": "9876543211"
         },
         "Karoo": {
