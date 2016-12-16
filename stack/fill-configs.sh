@@ -28,6 +28,8 @@ cat <<EOF >/.hera_mc/mc_config.json
 EOF
 cp /.hera_mc/mc_config.json /root/.hera_mc/
 
+# Derived from rtp/etc/rtp_hera_test1.cfg:
+
 cat <<EOF >$(dirname $0)/rtp/etc/still.cfg
 [dbinfo]
 dbuser = postgres
@@ -41,8 +43,8 @@ dbname = hera_rtp
 hosts = AUTO
 port = 14204
 data_dir = /data
-path_to_do_scripts = /hera/rtp/scripts/paper
-actions_per_still = 2
+path_to_do_scripts = /hera/rtp/scripts/hera
+actions_per_still = 6
 timeout = 14400
 sleep_time = 5
 block_size = 10
@@ -50,10 +52,10 @@ cluster_scheduler = 0
 
 [WorkFlow]
 prioritize_obs = 1
-neighbors = 1
-lock_all_neighbors_to_same_still = 1
-actions = UV_POT, UV, UVC, CLEAN_UV, UVCR, CLEAN_UVC, ACQUIRE_NEIGHBORS, UVCRE, NPZ, UVCRR, NPZ_LIBRARIAN, CLEAN_UVCRE, UVCRRE, CLEAN_UVCRR, CLEAN_NPZ, CLEAN_NEIGHBORS, UVCRRE_LIBRARIAN, LIBRARIAN_MARK_FINISHED, CLEAN_UVCRRE, CLEAN_UVCR, COMPLETE
-actions_endfile = UV_POT, UV, UVC, CLEAN_UV, UVCR, CLEAN_UVC, CLEAN_UVCR, COMPLETE
+neighbors = 0
+lock_all_neighbors_to_same_still = 0
+actions = UV_POT,UV,UVC,CLEAN_UV,PLOTAUTOS,ADD_LIBRARIAN_PLOTAUTOS,CLEAN_PLOTAUTOS,ANT_FLAG,ADD_LIBRARIAN_BADANTS,PULL_SUBARRAY,ADD_LIBRARIAN_SUBARRAY,FIRST_CAL_HEX,ADD_LIBRARIAN_FIRSTCAL,CLEAN_FIRST_CAL_HEX,CLEAN_SUBARRAY,CLEAN_ANT_FLAG,CLEAN_UVC,DELETE_RAW,COMPLETE
+actions_endfile = UV_POT, UV, UVC, CLEAN_UV, COMPLETE
 
 [UV]
 args = [basename, '%s:%s/%s' % (pot,path,basename)]
@@ -64,53 +66,45 @@ args = [basename]
 [CLEAN_UV]
 args = [basename]
 
-[UVCR]
+[PLOTAUTOS]
 args = [basename+'c']
+
+[ADD_LIBRARIAN_PLOTAUTOS]
+args = ['local-rtp', '%s/%s'%(parent_dirs, basename+'c.autos.png')]
+
+[CLEAN_PLOTAUTOS]
+args = [basename+'c.autos.png']
+
+[ANT_FLAG]
+args = [basename+'c']
+
+[ADD_LIBRARIAN_BADANTS]
+args = ['local-rtp', '%s/%s.bad_ants'%(parent_dirs, basename+'c')]
+
+[CLEAN_ANT_FLAG]
+args = [basename+'c.badants']
+
+[PULL_SUBARRAY]
+args = [basename+'c']
+
+[ADD_LIBRARIAN_SUBARRAY]
+args = ['local-rtp',basename+'c',parent_dirs]
 
 [CLEAN_UVC]
 args = [basename+'c']
 
-[ACQUIRE_NEIGHBORS]
-prereqs = UVCR, CLEAN_UVCR
-args = ['%s:%s/%s' % (n[0], n[1], n[-1] + 'cR') for n in neighbors if n[0] != stillhost or n[1] != stillpath]
+[FIRST_CAL_HEX]
+args = [basename+'c']
 
-[UVCRE]
-args = interleave(basename+'cR')
+[ADD_LIBRARIAN_FIRSTCAL]
+args = ['local-rtp',basename+'c',parent_dirs]
 
-[NPZ]
-args = [basename+'cRE']
+[CLEAN_SUBARRAY]
+args = [basename+'c']
 
-[UVCRR]
-args = [basename+'cR']
+[CLEAN_FIRST_CAL_HEX]
+args = [basename+'c']
 
-[NPZ_LIBRARIAN]
-args = ['onsite-rtp', '%s/%scRE.npz' % (parent_dirs, basename)]
-
-[CLEAN_UVCRE]
-args = [basename+'cRE']
-
-[UVCRRE]
-args = interleave(basename+'cRR')
-
-[CLEAN_UVCRR]
-args = [basename+'cRR']
-
-[CLEAN_NPZ]
-args = [basename+'cRE.npz']
-
-[CLEAN_NEIGHBORS]
-args =  [n[-1] + 'cR' for n in neighbors if n[0] != stillhost]
-
-[UVCRRE_LIBRARIAN]
-args = ['onsite-rtp', '%s/%scRRE' % (parent_dirs, basename)]
-
-[LIBRARIAN_MARK_FINISHED]
-args = ['onsite-rtp', basename]
-
-[CLEAN_UVCRRE]
-args = [basename+'cRRE']
-
-[CLEAN_UVCR]
-args = [basename+'cR']
-prereqs = UVCRRE
+[DELETE_RAW]
+args = ['local-rtp',basename]
 EOF
