@@ -1,4 +1,4 @@
-# Copyright 2016 the HERA collaboration.
+# Copyright 2016-2017 the HERA collaboration.
 # Licensed under the BSD License.
 # This file requires Docker >= v1.10 and docker-compose >= v1.6.
 version: "2"
@@ -26,8 +26,6 @@ services:
       - hera
     ports:
       - "21110:21106"
-    volumes:
-      - ./onsitelibrarian:/data
 
   onsitepot:
     image: hera-rsync-pot
@@ -37,7 +35,7 @@ services:
     networks:
       - hera
     volumes:
-      - ./onsitepot:/data
+      - ./onsitepot:/data:rw,z
 
   offsitelibrarian:
     image: hera-test-librarian
@@ -51,8 +49,6 @@ services:
       - hera
     ports:
       - "21107:21106"
-    volumes:
-      - ./offsitelibrarian:/data
 
   offsitepot:
     image: hera-rsync-pot
@@ -62,7 +58,7 @@ services:
     networks:
       - hera
     volumes:
-      - ./offsitepot:/data
+      - ./offsitepot:/data:rw,z
 
   rtpclient:
     image: hera-test-rtp
@@ -76,8 +72,6 @@ services:
       - hera
     ports:
       - "5000:5000"
-    volumes:
-      - ./rtpclient:/data
 
   # With a bit of work we should be able to use "docker-compose scale" to
   # create a bunch of RTP servers, but we can't do it yet. If we don't specify
@@ -97,7 +91,7 @@ services:
     networks:
       - hera
     volumes:
-      - ./rtpserver:/data
+      - ./rtpserver:/data:rw,z
 
 networks:
   hera:
