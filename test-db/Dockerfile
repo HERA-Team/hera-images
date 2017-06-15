@@ -1,4 +1,4 @@
-# Copyright 2015-2016 the HERA Collaboration
+# Copyright 2015-2017 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Build by running "build.sh".
@@ -22,7 +22,7 @@ FROM hera-stack:latest
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 ENV PG_MAJOR 9.5
-ENV PG_VERSION 9.5.6-1.pgdg70+1
+ENV PG_VERSION 9.5.7-1.pgdg70+1
 ENV LANG en_US.utf8
 ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
 ENV PGDATA /var/lib/postgresql/data
