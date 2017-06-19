@@ -199,3 +199,25 @@ commands are:
 * `\dt` — list tables in the current database
 * `\?` — get help on non-SQL commands
 * `\q` — quit the program
+
+
+### Pre-seeding the Librarian with a database dump
+
+If you want to test out the Librarian using real data, you can pre-seed the
+database with a dump extracted from a live HERA site. Notes on making database
+dumps are at
+[the Librarian admin notes](https://github.com/HERA-Team/librarian/blob/master/docs/Administration.md).
+
+1. Edit `rig/docker-compose.yml` to have the `db` instance mount some
+   directory that contains the database dump you’d like to load.
+2. Boot up the test rig.
+3. Stop the Librarian container: `docker stop rig_onsitelibrarian_1`.
+4. On the `rig_db_1` server, use the following genre of command to fill the
+   database with the dump contents:
+   ```
+   docker exec rig_db_1 pg_restore -cxO -U postgres -d hera_librarian_onsite /path/to/dump.pgdump
+   ```
+   Here the path to the dump should be the path that makes sense to the `db` container,
+   which will likely differ from the path used on your local machine
+5. Restart the Librarian container: `docker start rig_onsitelibrarian_1`.
+6. Navigate to http://localhost:21110/ and you should see your dump re-animated!
