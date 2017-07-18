@@ -212,7 +212,7 @@ dumps are at
    directory that contains the database dump you’d like to load.
 2. Boot up the test rig.
 3. Stop the Librarian container: `docker stop rig_onsitelibrarian_1`.
-4. On the `rig_db_1` server, use the following genre of command to fill the
+4. Use the following genre of command to fill the
    database with the dump contents:
    ```
    docker exec rig_db_1 pg_restore -cxO -U postgres -d hera_librarian_onsite /path/to/dump.pgdump
