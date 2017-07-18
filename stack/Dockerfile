@@ -29,6 +29,7 @@ RUN conda update --all \
     pandas \
     psutil \
     psycopg2 \
+    pyproj \
     scipy \
     sqlalchemy \
     tabulate \
