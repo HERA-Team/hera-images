@@ -11,8 +11,15 @@ if [ -z "$1" ] ; then
 fi
 
 set -e
+/hera/fill-configs.sh
 
 cd /hera/librarian/server
+
+if [ "$1" = onsite ] ; then
+    mc_flag=true
+else
+    mc_flag=false
+fi
 
 cat <<EOF >test-$1-config.json
 {
@@ -23,6 +30,7 @@ cat <<EOF >test-$1-config.json
     "host": "0.0.0.0",
     "displayed_site_name": "$1",
     "flask_debug": true,
+    "report_to_mandc": $mc_flag,
 
     "sources": {
         "RTP": {
