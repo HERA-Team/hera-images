@@ -20,5 +20,6 @@ cat <<EOF >/root/.hera_mc/mc_config.json
 EOF
 
 ln -s /var/run/postgresql/.s.PGSQL.5432 /tmp/
-mc_initialize_db.py
+cd /hera/hera_mc
+alembic upgrade head
 rm -f /tmp/.s.PGSQL.5432
