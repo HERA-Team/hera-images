@@ -1,4 +1,4 @@
-# Copyright 2015-2016 the HERA Collaboration
+# Copyright 2015-2017 the HERA Collaboration
 # Licensed under the MIT License.
 #
 # Build by running "build.sh"; see ../README.md for more information.
@@ -6,7 +6,7 @@
 # This builds a reasonable base image with an Anaconda Python installation
 # (well, Miniconda) and the standard HERA software stack.
 
-FROM continuumio/miniconda:4.1.11
+FROM continuumio/miniconda:4.3.14
 MAINTAINER Peter Williams <pwilliams@cfa.harvard.edu>
 
 RUN apt-get update && \
@@ -16,15 +16,22 @@ RUN apt-get update && \
   && rm -rf /var/lib/apt/lists/* && \
   mkdir -p /hera
 
-RUN conda update --all \
+RUN conda install -y 'libgfortran =3.0.0' \
+  && conda config --add channels conda-forge \
+  && conda config --remove channels defaults \
+  && conda update -y --all \
   && conda install -y \
+    alembic \
     astropy \
     basemap \
+    configparser \
+    python-dateutil \
     ephem \
     flask \
+    flask-sqlalchemy \
     mako \
     matplotlib \
-    nomkl \
+    netifaces \
     numpy \
     pandas \
     psutil \
@@ -32,12 +39,7 @@ RUN conda update --all \
     pyproj \
     scipy \
     sqlalchemy \
-    tabulate \
-  && pip install \
-    alembic \
-    configparser \
-    flask-sqlalchemy \
-    uptime
+    tabulate
 
 COPY hera/aipy /hera/aipy
 RUN cd /hera/aipy && python ./setup.py install
