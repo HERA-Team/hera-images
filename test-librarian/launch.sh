@@ -31,6 +31,11 @@ cat <<EOF >test-$1-config.json
     "displayed_site_name": "$1",
     "flask_debug": true,
     "report_to_mandc": $mc_flag,
+    "local_disk_staging": {
+      "ssh_host": "localhost",
+      "dest_prefix": "/data/stagedest",
+      "displayed_dest": "Test Directory"
+    },
 
     "sources": {
         "RTP": {
@@ -48,6 +53,7 @@ cat <<EOF >test-$1-config.json
     },
 
     "add-stores": {
+      "local": { "path_prefix": "/data", "ssh_host": "localhost" },
       "${1}pot": { "path_prefix": "/data", "ssh_host": "${1}pot" }
     }
 }
