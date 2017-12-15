@@ -1,27 +1,25 @@
 #! /bin/bash
-# Copyright 2016 the HERA Collaboration.
+# Copyright 2016-2017 the HERA Collaboration.
 # Licensed under the MIT License.
 
-usage="$0 <aipy> <omnical> <capo> <librarian> <rtp> <mandc>
+usage="$0 <omnical> <librarian> <rtp> <mandc>
 
 Build Docker images for all of the HERA components."
 
-if [ $# -ne 6 ] ; then
+if [ $# -ne 4 ] ; then
     echo >&2 "$usage"
     exit 1
 fi
 
-aipy="$1"
-omnical="$2"
-capo="$3"
-librarian="$4"
-rtp="$5"
-mandc="$6"
+omnical="$1"
+librarian="$2"
+rtp="$3"
+mandc="$4"
 
 images_dir=$(dirname "$0")
 
 set -e
-$images_dir/stack/build.sh "$aipy" "$omnical" "$capo" "$librarian" "$rtp" "$mandc"
+$images_dir/stack/build.sh "$omnical" "$librarian" "$rtp" "$mandc"
 $images_dir/ssh-stack/build.sh
 $images_dir/rsync-pot/build.sh
 $images_dir/test-db/build.sh

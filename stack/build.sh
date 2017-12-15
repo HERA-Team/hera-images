@@ -2,10 +2,10 @@
 # Copyright 2015 the HERA Collaboration.
 # Licensed under the MIT License.
 
-usage="$0 <aipy> <omnical> <capo> <librarian> <rtp> <m&c>
+usage="$0 <omnical> <librarian> <rtp> <m&c>
 
-Build a Docker image containing the HERA software stack. The arguments <aipy>,
-<omnical>, etc., are URLs specifying either a Git repository or a Git checkout.
+Build a Docker image containing the HERA software stack. The arguments <omnical>,
+<librarian>, etc., are URLs specifying either a Git repository or a Git checkout.
 For production usage the URLs should look something like
 
   file:///home/peter/sw/aipy#9f530c2
@@ -22,17 +22,15 @@ When the build completes, your Docker system will have a new image called
 \"hera-stack:YYYYMMDD\" that you can then use, where YYYYMMDD encodes today's
 date. The image will also be aliased to \"hera-stack:latest\"."
 
-if [ $# -ne 6 ] ; then
+if [ $# -ne 4 ] ; then
     echo >&2 "$usage"
     exit 1
 fi
 
-aipy_url="$1"
-omnical_url="$2"
-capo_url="$3"
-librarian_url="$4"
-rtp_url="$5"
-mandc_url="$6"
+omnical_url="$1"
+librarian_url="$2"
+rtp_url="$3"
+mandc_url="$4"
 
 # Setup options and useful variables.
 
@@ -51,9 +49,7 @@ set -e
 work=$(mktemp -d ${TMPDIR:-/tmp}/heraimage.XXXXXX)
 echo "Temporary work directory is $work ."
 mkdir $work/hera
-$specdir/../fetch-tree.sh $aipy_url $work/hera/aipy
 $specdir/../fetch-tree.sh $omnical_url $work/hera/omnical
-$specdir/../fetch-tree.sh $capo_url $work/hera/capo
 $specdir/../fetch-tree.sh $librarian_url $work/hera/librarian
 $specdir/../fetch-tree.sh $rtp_url $work/hera/rtp
 $specdir/../fetch-tree.sh $mandc_url $work/hera/mandc

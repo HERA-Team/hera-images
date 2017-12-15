@@ -21,6 +21,7 @@ RUN conda install -y 'libgfortran =3.0.0' \
   && conda config --remove channels defaults \
   && conda update -y --all \
   && conda install -y \
+    aipy \
     alembic \
     astropy \
     basemap \
@@ -37,20 +38,13 @@ RUN conda install -y 'libgfortran =3.0.0' \
     psutil \
     psycopg2 \
     pyproj \
+    pyuvdata \
     scipy \
     sqlalchemy \
     tabulate
 
-COPY hera/aipy /hera/aipy
-RUN cd /hera/aipy && python ./setup.py install
-
 COPY hera/omnical /hera/omnical
 RUN cd /hera/omnical && python ./setup.py install
-
-COPY hera/capo /hera/capo
-RUN cd /hera/capo && \
-      (cd Compress/ddr_compress && python setup.py install) && \
-      python ./setup.py install
 
 COPY hera/librarian /hera/librarian
 RUN cd /hera/librarian && python ./setup.py install
