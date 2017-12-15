@@ -15,11 +15,13 @@ cat <<EOF >/root/.hera_mc/mc_config.json
       "url": "postgresql://postgres:$HERA_DB_PASSWORD@:5432/hera_mc_test",
       "mode": "testing"
     }
-  }
+  },
+  "cm_csv_path": "/cmcsv"
 }
 EOF
 
 ln -s /var/run/postgresql/.s.PGSQL.5432 /tmp/
 cd /hera/hera_mc
 alembic upgrade head
+echo y |cm_init.py --maindb=pw4maindb
 rm -f /tmp/.s.PGSQL.5432
