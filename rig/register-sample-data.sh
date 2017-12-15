@@ -19,6 +19,6 @@ if [ $ec -ne 0 ] ; then
     exit 1
 fi
 
-docker exec rig_onsitepot_1 bash -c "mc_add_observation.py /data/2458101/*.uv"
+docker exec rig_onsitepot_1 bash -c "mc_add_observation.py /data/2458101/*.xx.*.uv"
 docker exec rig_onsitepot_1 bash -c "add_obs_librarian.py local-correlator onsitepot /data/2458101/*.uv"
 docker exec rig_onsitelibrarian_1 librarian_assign_sessions.py local-correlator
