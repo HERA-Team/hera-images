@@ -31,10 +31,13 @@ cat <<EOF >test-$1-config.json
     "displayed_site_name": "$1",
     "flask_debug": true,
     "report_to_mandc": $mc_flag,
+    "obsid_inference_mode": "_testing",
     "local_disk_staging": {
       "ssh_host": "localhost",
       "dest_prefix": "/data/stagedest",
-      "displayed_dest": "Test Directory"
+      "displayed_dest": "Test Directory",
+      "username_placeholder": "your username",
+      "chown_command": ["echo", "chown"]
     },
 
     "sources": {
