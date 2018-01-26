@@ -24,6 +24,8 @@ fi
 cat <<EOF >test-$1-config.json
 {
     "server": "tornado",
+    "n_server_processes": 2,
+    "n_worker_threads": 2,
     "SECRET_KEY": "7efa9258e0b841eda8a682ccdd53c65d493a7dc4b95a5752b0db1bbbe96bd269",
     "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:$HERA_DB_PASSWORD@db:5432/hera_librarian_$1",
     "SQLALCHEMY_TRACK_MODIFICATIONS": false,
