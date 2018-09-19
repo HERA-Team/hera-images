@@ -85,11 +85,21 @@ We can now simulate various processes in the test rig.
 ### Registering data with the librarian and viewing the results
 
 Let’s say that some new data have been created on a pot and that we want to
-tell the Librarian about them. This command registers them:
+tell the Librarian about them. First, we need to register their corresponding
+observations with the M&C system, since there are interlocks to make sure
+that the various databases are self-consistent:
 
 ```
 docker exec rig_onsitepot_1 \
-  bash -c "add_obs_librarian.py local-correlator onsitepot /data/*/*.uv*"
+  bash -c "source /opt/conda/etc/conda/activate.d/* ; mc_add_observation.py /data/2458*/*.uv"
+```
+
+(TODO: straighten out the conda-sourcing situation.) Then this command will actually
+register the data with the Librarian:
+
+```
+docker exec rig_onsitepot_1 \
+  bash -c "add_obs_librarian.py local-correlator onsitepot /data/2458*/*.uv*"
 ```
 
 This should churn for a while, then print out the names of the files it added.
