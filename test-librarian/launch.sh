@@ -11,6 +11,11 @@ if [ -z "$1" ] ; then
 fi
 
 set -e
+
+for f in /opt/conda/etc/conda/activate.d/* ; do
+    source "$f"
+done
+
 /hera/fill-configs.sh
 
 cd /hera/librarian/server

@@ -3,6 +3,11 @@
 # Licensed under the MIT License.
 
 set -e
+
+for f in /opt/conda/etc/conda/activate.d/* ; do
+    source "$f"
+done
+
 /hera/fill-configs.sh
 
 # Meh, just run this in the background.

@@ -1,6 +1,10 @@
 #! /bin/bash
-# Copyright 2016 the HERA Collaboration
+# Copyright 2016-2018 the HERA Collaboration
 # Licensed under the BSD License.
+
+for f in /opt/conda/etc/conda/activate.d/* ; do
+    source "$f"
+done
 
 mkdir -p /root/.hera_mc
 cat <<EOF >/root/.hera_mc/mc_config.json
